@@ -207,7 +207,7 @@ html,body{height:100%;overflow:hidden;background:var(--deep);color:var(--ink);
 #toast.in{opacity:1;transform:translateY(0);pointer-events:auto}
 
 /* 立ち絵（今は仮。画像が来たら #catImg に差し替え） */
-#cat{flex:none;width:104px;height:150px;
+#cat{flex:none;width:118px;height:168px;
   display:grid;place-items:end center;font-size:62px;line-height:1;
   filter:drop-shadow(0 6px 16px rgba(0,0,0,.75));
   animation:catBob 4s ease-in-out infinite}
@@ -215,20 +215,20 @@ html,body{height:100%;overflow:hidden;background:var(--deep);color:var(--ink);
 @keyframes catBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
 /* 吹き出し */
-#bubble{position:relative;flex:1;min-width:0;margin-bottom:14px;
+#bubble{position:relative;flex:1;min-width:0;margin-bottom:24px;
   background:linear-gradient(180deg,rgba(255,252,244,.98),rgba(246,240,228,.98));
   border:1px solid rgba(180,150,90,.55);
-  border-radius:16px;padding:15px 17px;
+  border-radius:16px;padding:14px 15px;
   box-shadow:0 10px 30px rgba(0,0,0,.55)}
-#bubble::before{content:"";position:absolute;left:-9px;bottom:22px;
+#bubble::before{content:"";position:absolute;left:-9px;bottom:26px;
   width:0;height:0;border:9px solid transparent;
   border-right-color:rgba(180,150,90,.55)}
-#bubble::after{content:"";position:absolute;left:-7px;bottom:22px;
+#bubble::after{content:"";position:absolute;left:-7px;bottom:26px;
   width:0;height:0;border:8px solid transparent;
   border-right-color:rgba(252,248,238,.98)}
-.bub-tx{font-size:13.5px;line-height:1.85;color:#3a3020;letter-spacing:.03em;
-  white-space:pre-line}
-.bub-go{margin-top:10px;font-size:11.5px;letter-spacing:.14em;
+.bub-tx{font-size:12.5px;line-height:1.8;color:#3a3020;letter-spacing:0;
+  white-space:pre-line;word-break:keep-all;overflow-wrap:anywhere}
+.bub-go{margin-top:9px;font-size:11px;letter-spacing:.12em;
   color:#9a7226;border-bottom:1px solid rgba(154,114,38,.4);
   display:inline-block;padding-bottom:2px}
 
@@ -709,7 +709,7 @@ function refreshStation(){
 
 /* --- 世界の中に浮かぶ呼びかけ --- */
 /* 猫のセリフ */
-const CAT_LINE = "あなたにお手紙が届いてるみたい。\nはじまりの駅から読めるわ。\n読んでみてね";
+const CAT_LINE = "あなたにお手紙が\n届いてるみたい。\nはじまりの駅から読めるわ。\n読んでみてね";
 
 /* 立ち絵（埋め込み済み） */
 (()=>{
