@@ -504,6 +504,7 @@ function clamp(){
 let baseW=0, baseH=0;
 function fit(){
   const vw = viewport.clientWidth, vh = viewport.clientHeight;
+  if(!vw || !vh) return;            // まだ表示されていないときは何もしない
   const nw = mapimg.naturalWidth || 1400, nh = mapimg.naturalHeight || 933;
   baseW = vw;                       // 幅ぴったりを基準に
   baseH = vw * nh / nw;
@@ -519,6 +520,9 @@ function fit(){
 }
 mapimg.addEventListener("load", fit);
 window.addEventListener("resize", ()=>{ fit(); });
+/* キャッシュ済みだと load が先に終わっていることがあるので、その場合はすぐ実行 */
+if(mapimg.complete && mapimg.naturalWidth) fit();
+else requestAnimationFrame(()=>{ if(mapimg.naturalWidth) fit(); });
 
 /* zoom を 1点中心で行う */
 function zoomAt(cx, cy, next){
