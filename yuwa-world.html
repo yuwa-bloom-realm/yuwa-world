@@ -240,8 +240,13 @@ html,body{height:100%;overflow:hidden;background:var(--deep);color:var(--ink);
   background:radial-gradient(ellipse at 50% 62%,#0d1030 0%,#05050f 70%);
   overflow:hidden}
 #show.on{display:block}
-#show.bright{background:radial-gradient(ellipse at 50% 62%,#1b2456 0%,#0a0a20 72%)}
-#show{transition:background 2s ease}
+/* 世界の灯りが戻る層（グラデーション同士は補間できないので別レイヤーで重ねる） */
+#showLight{position:absolute;inset:0;pointer-events:none;opacity:0;
+  transition:opacity 2.4s ease;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% 74%,rgba(255,226,160,.42) 0%,transparent 70%),
+    radial-gradient(ellipse at 50% 58%,rgba(90,140,220,.5) 0%,rgba(40,60,140,.3) 45%,transparent 78%)}
+#show.bright #showLight{opacity:1}
 
 /* 星の粒 */
 #showStars{position:absolute;inset:0;pointer-events:none;opacity:0;
@@ -427,6 +432,7 @@ const YUWA_IMG="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAmwAAAMcCAMAAADaHg
 
 <!-- ===== 5. 総支配人ゆわのショー ===== -->
 <div id="show">
+  <div id="showLight"></div>
   <div id="showStars"></div>
   <div id="yuwa"><span id="yuwaFallback">✦</span></div>
   <div id="yuwaWrap"><div id="wand"></div><div id="showGlow"></div></div>
@@ -1136,9 +1142,13 @@ function playShow(){
     showText.innerHTML="";
     const w=document.getElementById("wand");
     w.classList.remove("flash"); void w.offsetWidth; w.classList.add("flash");
-    showEl.classList.add("bright");
+    document.getElementById("showGlow").classList.add("burst");
   });
-  t += 1400;
+  sAt(t+600, ()=>{
+    showEl.classList.add("bright");                       /* 世界の灯りが戻る */
+    document.getElementById("showGlow").classList.remove("burst");
+  });
+  t += 2600;
 
   /* 6. さあ、今日はどこへ行きましょう。 */
   sAt(t, ()=>{
