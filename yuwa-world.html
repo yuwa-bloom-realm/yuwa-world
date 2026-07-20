@@ -352,12 +352,6 @@ const AREAS = [
 /* =========================================================
    ②  時刻でマップ画像を切り替え（画像を置けば自動で効く）
    ========================================================= */
-const MAPS = {
-  morning:"map-morning.jpg",
-  day    :"map-day.jpg",
-  sunset :"map-sunset.jpg",
-  night  :"map-night.jpg",
-};
 function timeSlot(h){
   if(h>=5  && h<10) return "morning";
   if(h>=10 && h<16) return "day";
@@ -373,11 +367,21 @@ const canvas = document.getElementById("canvas");
 const mapimg = document.getElementById("mapimg");
 const viewport = document.getElementById("viewport");
 
+/* 拡張子は .jpeg / .jpg どちらでも読めるようにする */
+function loadMap(s){
+  const tries=[`map-${s}.jpeg`, `map-${s}.jpg`, `map-${s}.png`];
+  let i=0;
+  const next=()=>{
+    if(i>=tries.length){ mapimg.onerror=null; return; }
+    mapimg.onerror=next;
+    mapimg.src=tries[i++];
+  };
+  next();
+}
+
 const slot = timeSlot(new Date().getHours());
 document.getElementById("clock").textContent = SLOT_JP[slot]+"の世界";
-
-mapimg.onerror = ()=>{ mapimg.onerror=null; mapimg.src = MAPS.night; };
-mapimg.src = MAPS[slot];
+loadMap(slot);
 
 /* 右上をタップすると時間帯を切り替えて確認できる */
 (()=>{
@@ -386,8 +390,7 @@ mapimg.src = MAPS[slot];
   document.getElementById("clock").addEventListener("click",()=>{
     i=(i+1)%order.length;
     const s=order[i];
-    mapimg.onerror=()=>{ mapimg.onerror=null; mapimg.src=MAPS.night; };
-    mapimg.src=MAPS[s];
+    loadMap(s);
     document.getElementById("clock").textContent=SLOT_JP[s]+"の世界";
   });
 })();
