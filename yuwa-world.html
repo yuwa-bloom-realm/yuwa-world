@@ -129,8 +129,8 @@ html,body{height:100%;overflow:hidden;background:var(--deep);color:var(--ink);
   background:linear-gradient(180deg,rgba(5,5,15,.85),transparent);
   display:flex;justify-content:space-between;align-items:center}
 #title{font-size:13px;letter-spacing:.2em;color:var(--gold)}
-#clock{font-size:11px;letter-spacing:.1em;color:rgba(233,228,245,.5);
-  border:1px solid rgba(233,228,245,.18);border-radius:99px;padding:5px 12px}
+#clock{font-size:11px;letter-spacing:.1em;color:rgba(233,228,245,.5)}
+#sound{font-size:15px;line-height:1;opacity:.75;padding:4px 2px}
 
 /* 下部タブ */
 #tabs{position:relative;flex:none;z-index:5;
@@ -271,7 +271,10 @@ document.getElementById('trainImg').src=TRAIN;
 <div id="world" class="layer">
   <div id="topbar">
     <div id="title">Yuwa Entertainment</div>
-    <div id="clock"></div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div id="clock"></div>
+      <div id="sound">🔊</div>
+    </div>
   </div>
 
   <div id="viewport">
@@ -388,17 +391,88 @@ const slot = timeSlot(new Date().getHours());
 document.getElementById("clock").textContent = SLOT_JP[slot]+"の世界";
 loadMap(slot);
 
-/* 右上をタップすると時間帯を切り替えて確認できる */
-(()=>{
-  const order=["morning","day","sunset","night"];
-  let i=order.indexOf(slot);
-  document.getElementById("clock").addEventListener("click",()=>{
-    i=(i+1)%order.length;
-    const s=order[i];
-    loadMap(s);
-    document.getElementById("clock").textContent=SLOT_JP[s]+"の世界";
-  });
-})();
+/* =========================================================
+   BGM — 開いた時間帯の曲がループで流れる
+   bgm-morning / bgm-day / bgm-sunset / bgm-night
+   mp3は末尾に無音が入るので、2つのAudioを重ねて継ぎ目を消す
+   ========================================================= */
+const MUTE_KEY = "yuwa_muted";
+const VOL = 0.55, XFADE = 1.6;   /* 重ねる秒数 */
+let bgmA=null, bgmB=null, bgmFade=null, bgmTimer=null, bgmSrc="";
+
+function makeAudio(){
+  const a=new Audio();
+  a.preload="auto"; a.volume=0; a.loop=false;
+  return a;
+}
+
+function initBGM(){
+  bgmA=makeAudio(); bgmB=makeAudio();
+  const tries=[`bgm-${slot}.mp3`, `bgm-${slot}.m4a`, `bgm-${slot}.ogg`];
+  let i=0;
+  const next=()=>{
+    if(i>=tries.length){ bgmA.onerror=null; return; }
+    bgmA.onerror=next;
+    bgmSrc=tries[i++];
+    bgmA.src=bgmSrc; bgmB.src=bgmSrc;
+  };
+  next();
+}
+
+/* 再生中の曲が終わりに近づいたら、もう片方を頭から重ねる */
+function scheduleLoop(cur, other){
+  clearInterval(bgmTimer);
+  bgmTimer=setInterval(()=>{
+    if(localStorage.getItem(MUTE_KEY)==="1") return;
+    const d=cur.duration;
+    if(!d || isNaN(d)) return;
+    if(d-cur.currentTime <= XFADE){
+      other.currentTime=0; other.volume=0;
+      const p=other.play(); if(p&&p.catch) p.catch(()=>{});
+      rampVolume(other, VOL, XFADE*1000);
+      rampVolume(cur, 0, XFADE*1000, ()=>{ cur.pause(); });
+      scheduleLoop(other, cur);
+    }
+  }, 200);
+}
+
+function rampVolume(el, target, ms, done){
+  const from=el.volume, steps=Math.max(1,Math.round(ms/50));
+  let n=0;
+  const id=setInterval(()=>{
+    n++;
+    el.volume=Math.min(1,Math.max(0, from+(target-from)*(n/steps)));
+    if(n>=steps){ clearInterval(id); if(done) done(); }
+  },50);
+  return id;
+}
+
+function startBGM(){
+  if(!bgmA || localStorage.getItem(MUTE_KEY)==="1") return;
+  if(!bgmA.paused || !bgmB.paused) return;   /* すでに鳴っている */
+  const p=bgmA.play();
+  const go=()=>{ rampVolume(bgmA, VOL, 2500); scheduleLoop(bgmA, bgmB); };
+  if(p&&p.then) p.then(go).catch(()=>{}); else go();
+}
+
+function setMuted(m){
+  localStorage.setItem(MUTE_KEY, m ? "1" : "0");
+  document.getElementById("sound").textContent = m ? "🔇" : "🔊";
+  if(m){
+    clearInterval(bgmTimer);
+    [bgmA,bgmB].forEach(a=> rampVolume(a, 0, 500, ()=>a.pause()));
+  }else{
+    startBGM();
+  }
+}
+
+initBGM();
+document.getElementById("sound").textContent =
+  localStorage.getItem(MUTE_KEY)==="1" ? "🔇" : "🔊";
+document.getElementById("sound").addEventListener("click", e=>{
+  e.stopPropagation();
+  setMuted(localStorage.getItem(MUTE_KEY)!=="1");
+});
 
 AREAS.forEach(a=>{
   const el = document.createElement("div");
@@ -758,7 +832,7 @@ function toWorld(){
 }
 
 gate.addEventListener("click",(e)=>{
-  /* ここで audio.play() を呼ぶと iOS でも鳴る */
+  startBGM();   /* 最初のタップで音が解禁される（iOSの仕様） */
   const full = e.target.id==="replayGate" || localStorage.getItem(SEEN)!=="1";
   playOpening(!full);
 });
