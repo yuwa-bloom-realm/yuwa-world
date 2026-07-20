@@ -182,6 +182,9 @@ html,body{height:100%;overflow:hidden;background:var(--deep);color:var(--ink);
   display:flex;justify-content:space-between;align-items:center}
 .link:active{background:rgba(127,216,208,.12)}
 .link span{opacity:.5;font-size:11px}
+.link.soon{border-color:rgba(233,228,245,.16);color:rgba(233,228,245,.42)}
+.link.soon:active{background:none}
+.link.soon span{font-size:10px;letter-spacing:.1em}
 
 /* ============ 4. Yuwa Letter ============ */
 /* お手紙が待っている駅 */
@@ -344,7 +347,7 @@ const AREAS = [
   { no:"01", name:"はじまりの駅",   x:43, y:27, open:true,
     lead:"すべての旅のはじまりの場所。ここで旅人証を受け取り、言の葉パスポートを開きます。",
     items:["Welcome Experience","旅人証の受け取り","言の葉パスポートを開く","今月の行き先を知る"],
-    cta:"入場する", url:"#welcome" },
+    cta:"", url:"" },
 
   { no:"02", name:"物語と体験の街", x:77, y:22, open:false,
     lead:"毎月のメインEntertainmentが楽しめる街。",
@@ -358,19 +361,21 @@ const AREAS = [
     lead:"あなたの心に咲く言葉を集める庭。集めた言葉は、あなただけの宝物になります。",
     items:["言の葉パスポート","今月のカード","過去のカード","年間コレクション"],
     cta:"庭に入る",
-    links:[{t:"言の葉パスポート",u:"#passport"},{t:"12か月のカード一覧",u:"#cards"}] },
+    links:[{t:"言の葉パスポート",u:"https://yuwa-bloom-realm.github.io/kotonoha-passport/kotonoha-passport.html"},
+           {t:"12か月のカード一覧",u:""}] },
 
   { no:"05", name:"こころの天文台", x:13, y:72, open:true,
     lead:"自分の軌跡と未来を見つめる場所。受け取った言葉が、星座になって空に浮かびます。",
     items:["こころ星座プラネタリウム","過去に受け取った言葉","自分の選択と記録","次に進む一歩を見つける"],
     cta:"天文台へ入る",
-    links:[{t:"こころ星座プラネタリウム",u:"#planetarium"},{t:"言葉の星座を見る",u:"#constellation"}] },
+    links:[{t:"こころ星座プラネタリウム",u:"https://yuwa-bloom-realm.github.io/yuwa-planetarium/"}] },
 
   { no:"06", name:"月夜の劇場",     x:42, y:72, open:true,
     lead:"ライブや上映会が行われる場所。今夜は、どの物語に会いにいきますか。",
     items:["月1回のライブ","プレミア上映","季節の特別公演","朗読・音楽・映像"],
     cta:"劇場に入る",
-    links:[{t:"月夜の謎解き喫茶",u:"#nazotoki"},{t:"影の魔王",u:"#maou"},{t:"今月の朗読",u:"#roudoku"}] },
+    links:[{t:"影の魔王",u:"https://yuwa-bloom-realm.github.io/kage-no-maou/"},
+           {t:"月夜の謎解き喫茶",u:""},{t:"今月の朗読",u:""}] },
 
   { no:"07", name:"灯りの部屋",     x:64, y:72, open:false,
     lead:"心を休めて、整える場所。",
@@ -622,8 +627,9 @@ const sheet=document.getElementById("sheet"),
       body =document.getElementById("sheetBody");
 
 function openSheet(a){
-  const links = (a.links||[]).map(l=>
-    `<a class="link" href="${l.u}">${l.t}<span>›</span></a>`).join("");
+  const links = (a.links||[]).map(l=> l.u
+    ? `<a class="link" href="${l.u}" target="_blank" rel="noopener">${l.t}<span>›</span></a>`
+    : `<div class="link soon">${l.t}<span>まもなく</span></div>`).join("");
 
   /* 駅を開いたとき、未読のお手紙をその場で渡す */
   let mail = "";
@@ -641,9 +647,10 @@ function openSheet(a){
     ${mail}
     <ul class="sheet-list">${a.items.map(i=>`<li>${i}</li>`).join("")}</ul>
     ${links ? `<div class="links">${links}</div>` : ""}
-    <button class="enter ${a.open?"":"soon"}">${a.open ? (a.cta||"入場する") : "まもなく開きます"}</button>`;
-  if(a.open){
-    body.querySelector(".enter").onclick = ()=>{ if(a.url) location.hash=a.url; closeSheet(); };
+    ${(!a.open || a.url) ? `<button class="enter ${a.open?"":"soon"}">${a.open ? (a.cta||"入場する") : "まもなく開きます"}</button>` : ""}`;
+  const btn = body.querySelector(".enter");
+  if(a.open && btn){
+    btn.onclick = ()=>{ if(a.url) window.open(a.url,"_blank","noopener"); closeSheet(); };
   }
   sheet.classList.add("up"); scrim.classList.add("on");
   if(mail) markAllRead();
@@ -674,11 +681,11 @@ sheet.addEventListener("touchend",e=>{
 const LETTERS = [
   { id:"2026-07-b", date:"2026.07.15", title:"月夜の劇場、開きました",
     body:"劇場の扉が開きました。\n今月は「月夜の謎解き喫茶」を上映しています。\n\nゆっくり、あなたのペースでどうぞ。",
-    go:{t:"月夜の劇場へ", u:"#nazotoki"} },
+    go:{t:"月夜の劇場へ", u:"https://yuwa-bloom-realm.github.io/kage-no-maou/"} },
 
   { id:"2026-07-a", date:"2026.07.01", title:"7月の言の葉カードが届きました",
     body:"今月の言葉は「ゆるむ」。\n言の葉の庭で受け取れます。",
-    go:{t:"言の葉の庭へ", u:"#cards"} },
+    go:null },
 
   { id:"2026-06-a", date:"2026.06.20", title:"この世界へ、ようこそ",
     body:"Yuwa Entertainment World が開きました。\nはじまりの駅から、あなたの旅がはじまります。" },
@@ -747,7 +754,7 @@ function letterHTML(list){
       </div>
       <div class="letter-ttl">${l.title}</div>
       <div class="letter-bd">${l.body}</div>
-      ${l.go ? `<a class="letter-go" href="${l.go.u}">${l.go.t} →</a>` : ""}
+      ${l.go ? `<a class="letter-go" href="${l.go.u}" target="_blank" rel="noopener">${l.go.t} →</a>` : ""}
     </div>`;
   }).join("");
 }
