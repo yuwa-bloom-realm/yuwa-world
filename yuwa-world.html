@@ -509,9 +509,11 @@ function fit(){
   baseH = vw * nh / nw;
   canvas.style.width  = baseW+"px";
   canvas.style.height = baseH+"px";
-  minScale = Math.min(1, vh/baseH); // 全体が入る倍率
-  scale = minScale;
-  tx=0; ty=0; clamp(); apply();
+  /* 縮小の下限は「全体が入る倍率」。ただし初期表示は幅いっぱい */
+  minScale = Math.min(1, vh/baseH);
+  scale = 1;                        // 画面の幅いっぱいで world に入る
+  tx=0; ty=(vh-baseH)/2;            // 縦は中央に寄せる
+  clamp(); apply();
 }
 mapimg.addEventListener("load", fit);
 window.addEventListener("resize", ()=>{ fit(); });
@@ -573,7 +575,7 @@ let lastTap=0;
 viewport.addEventListener("click",e=>{
   const now=Date.now();
   if(now-lastTap<300 && !moved){
-    zoomAt(e.clientX, e.clientY, scale>minScale*1.6 ? minScale : minScale*2.4);
+    zoomAt(e.clientX, e.clientY, scale>1.4 ? 1 : 2.4);
   }
   lastTap=now;
 });
@@ -819,11 +821,12 @@ function toWorld(){
   opTimers.forEach(clearTimeout); opTimers=[];
   show(world);
   fit();
+  const restH = viewport.clientHeight;
   /* 空からの引き：拡大状態からゆっくり戻す */
-  scale = minScale*2.6; clamp(); apply();
+  scale = 2.6; clamp(); apply();
   canvas.style.transition="transform 2200ms cubic-bezier(.25,.8,.3,1)";
   requestAnimationFrame(()=>{
-    scale = minScale; tx=0; ty=0; clamp(); apply();
+    scale = 1; tx=0; ty=(restH-baseH)/2; clamp(); apply();
     setTimeout(()=>{ canvas.style.transition=""; },2300);
   });
   /* ズームアウトの途中で、静かに浮かびはじめる */
