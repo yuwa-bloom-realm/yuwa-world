@@ -489,8 +489,8 @@ AREAS.forEach(a=>{
 /* =========================================================
    ④  ピンチズーム / パン / ダブルタップ
    ========================================================= */
-let scale=1, tx=0, ty=0, minScale=1;
-const MAXS = 4;
+let scale=1, tx=0, ty=0, minScale=1, fillScale=1;
+const MAXS = 8;
 
 function apply(){ canvas.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`; }
 
@@ -504,15 +504,17 @@ function clamp(){
 let baseW=0, baseH=0;
 function fit(){
   const vw = viewport.clientWidth, vh = viewport.clientHeight;
-  const nw = mapimg.naturalWidth || 1200, nh = mapimg.naturalHeight || 900;
+  const nw = mapimg.naturalWidth || 1400, nh = mapimg.naturalHeight || 933;
   baseW = vw;                       // 幅ぴったりを基準に
   baseH = vw * nh / nw;
   canvas.style.width  = baseW+"px";
   canvas.style.height = baseH+"px";
-  /* 縮小の下限は「全体が入る倍率」。ただし初期表示は幅いっぱい */
-  minScale = Math.min(1, vh/baseH);
-  scale = 1;                        // 画面の幅いっぱいで world に入る
-  tx=0; ty=(vh-baseH)/2;            // 縦は中央に寄せる
+  minScale = 1;                     // 幅いっぱいより小さくはしない
+  /* 縦の黒帯を消す：画面の高さを埋めるまで寄る（最大2.2倍） */
+  fillScale = Math.min(3.2, Math.max(1, vh/baseH));
+  scale = fillScale;
+  tx = (vw-baseW*scale)/2;
+  ty = (vh-baseH*scale)/2;
   clamp(); apply();
 }
 mapimg.addEventListener("load", fit);
@@ -575,7 +577,7 @@ let lastTap=0;
 viewport.addEventListener("click",e=>{
   const now=Date.now();
   if(now-lastTap<300 && !moved){
-    zoomAt(e.clientX, e.clientY, scale>1.4 ? 1 : 2.4);
+    zoomAt(e.clientX, e.clientY, scale>fillScale*1.4 ? fillScale : fillScale*2.2);
   }
   lastTap=now;
 });
@@ -821,12 +823,10 @@ function toWorld(){
   opTimers.forEach(clearTimeout); opTimers=[];
   show(world);
   fit();
-  const restH = viewport.clientHeight;
-  /* 空からの引き：拡大状態からゆっくり戻す */
-  scale = 2.6; clamp(); apply();
+  scale = fillScale*2.6; clamp(); apply();
   canvas.style.transition="transform 2200ms cubic-bezier(.25,.8,.3,1)";
   requestAnimationFrame(()=>{
-    scale = 1; tx=0; ty=(restH-baseH)/2; clamp(); apply();
+    fit();
     setTimeout(()=>{ canvas.style.transition=""; },2300);
   });
   /* ズームアウトの途中で、静かに浮かびはじめる */
