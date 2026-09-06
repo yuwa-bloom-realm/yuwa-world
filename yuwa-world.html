@@ -9,28 +9,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Yuwa Entertainment">
-
-<!-- ===== OneSignal（お知らせ通知） ===== -->
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "a5cd3c2f-82b8-4a01-89c0-a57622d2aee0",
-    });
-  });
-  /* 旅人証ボタンから呼ぶ：通知の許可をお願いする */
-  async function yuwaAskNotify(){
-    return new Promise((resolve)=>{
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal){
-        try{
-          await OneSignal.Notifications.requestPermission();
-          resolve(OneSignal.Notifications.permission === true);
-        }catch(e){ resolve(false); }
-      });
-    });
-  }
 <style>
 :root{
   --ink:#e9e4f5;
@@ -1042,31 +1020,11 @@ document.getElementById("tabPass").addEventListener("click", () => {
       </ul>
     </div>
     <div class="links" style="margin-top:16px">
-      <a class="link" id="passNotify" href="javascript:void(0)">
-        旅人証を受け取る<span>›</span></a>
       <a class="link" href="${LINE_URL}" target="_blank" rel="noopener">
-        LINEでもつながる<span>›</span></a>
+        旅人証を受け取る<span>›</span></a>
     </div>
-    <div class="intro-note" id="passNote">旅人証を受け取ると、新しい物語が届いたときにお知らせが届きます。</div>`;
+    <div class="intro-note">旅人証を受け取ると、新しい物語が届いたときにお知らせが届きます。</div>`;
   sheet.classList.add("up"); scrim.classList.add("on");
-
-  /* 「旅人証を受け取る」→ 通知の許可をお願いする */
-  const passBtn = document.getElementById("passNotify");
-  if(passBtn){
-    passBtn.addEventListener("click", async ()=>{
-      const note = document.getElementById("passNote");
-      if(note) note.textContent = "お知らせの受け取りを確認しています…";
-      const ok = await yuwaAskNotify();
-      if(ok){
-        passBtn.innerHTML = "✦ 旅人証を受け取りました";
-        passBtn.style.pointerEvents = "none";
-        passBtn.style.opacity = ".7";
-        if(note) note.textContent = "これで、新しい物語が届いたときにお知らせが届きます。";
-      }else{
-        if(note) note.textContent = "お知らせは今はオフのままです。いつでもここから受け取れます。";
-      }
-    });
-  }
 });
 
 /* --- この世界について --- */
