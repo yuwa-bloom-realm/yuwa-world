@@ -1250,5 +1250,80 @@ document.getElementById("skip").addEventListener("click",e=>{
   e.stopPropagation(); toWorld();
 });
 </script>
+
+<!-- ===== OneSignal（お知らせ通知）本編とは完全に独立 ===== -->
+<script>
+(function(){
+  /* 本編のスクリプトは上で全部動き終わっている。
+     ここから下は通知専用。何が起きても本編には触れない。 */
+  try{
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+    // SDKを読み込む（失敗しても本編は動いているので影響なし）
+    var s = document.createElement("script");
+    s.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
+    s.defer = true;
+    s.onerror = function(){ /* 読み込めなくても黙って本編続行 */ };
+    document.head.appendChild(s);
+
+    window.OneSignalDeferred.push(async function(OneSignal){
+      try{
+        await OneSignal.init({ appId: "a5cd3c2f-82b8-4a01-89c0-a57622d2aee0" });
+      }catch(e){}
+    });
+
+    // 通知の許可をお願いする関数
+    async function yuwaAskNotify(){
+      return new Promise(function(resolve){
+        try{
+          window.OneSignalDeferred.push(async function(OneSignal){
+            try{
+              await OneSignal.Notifications.requestPermission();
+              resolve(OneSignal.Notifications.permission === true);
+            }catch(e){ resolve(false); }
+          });
+        }catch(e){ resolve(false); }
+      });
+    }
+
+    /* 旅人証パネルが開かれたら「旅人証を受け取る」リンクを見つけて結線する。
+       本編のHTMLは書き換えず、後から探して動きだけ足す。 */
+    function wirePassButton(){
+      try{
+        var links = document.querySelectorAll('#sheetBody a.link');
+        for(var i=0;i<links.length;i++){
+          var a = links[i];
+          if(a.dataset.yuwaWired) continue;              // 二重結線を防ぐ
+          if(a.textContent.indexOf("旅人証を受け取る") === -1) continue;
+          a.dataset.yuwaWired = "1";
+          a.addEventListener("click", async function(ev){
+            try{ ev.preventDefault(); }catch(e){}
+            var self = this;
+            var note = self.parentNode ? self.parentNode.parentNode.querySelector('.intro-note') : null;
+            if(note) note.textContent = "お知らせの受け取りを確認しています…";
+            var ok = await yuwaAskNotify();
+            if(ok){
+              self.innerHTML = "✦ 旅人証を受け取りました";
+              self.style.pointerEvents = "none";
+              self.style.opacity = ".7";
+              if(note) note.textContent = "これで、新しい物語が届いたときにお知らせが届きます。";
+            }else{
+              if(note) note.textContent = "お知らせは今はオフのままです。いつでもここから受け取れます。";
+            }
+          });
+        }
+      }catch(e){}
+    }
+
+    // 旅人証タブが押されたら、少し待ってからボタンを結線
+    var passTab = document.getElementById("tabPass");
+    if(passTab){
+      passTab.addEventListener("click", function(){
+        setTimeout(wirePassButton, 50);
+      });
+    }
+  }catch(e){ /* 通知まわりで何かあっても本編は無傷 */ }
+})();
+</script>
 </body>
 </html>
