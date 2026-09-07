@@ -9,6 +9,29 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Yuwa Entertainment">
+
+<!-- ===== OneSignal（お知らせ通知） ===== -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "a5cd3c2f-82b8-4a01-89c0-a57622d2aee0",
+    });
+  });
+  /* 旅人証ボタンから呼ぶ：通知の許可をお願いする */
+  async function yuwaAskNotify(){
+    return new Promise((resolve)=>{
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal){
+        try{
+          await OneSignal.Notifications.requestPermission();
+          resolve(OneSignal.Notifications.permission === true);
+        }catch(e){ resolve(false); }
+      });
+    });
+  }
+</script>
 <style>
 :root{
   --ink:#e9e4f5;
@@ -529,9 +552,12 @@ const AREAS = [
     links:[{t:"影の魔王",u:"https://yuwa-bloom-realm.github.io/kage-no-maou/kage_no_maou_game.html"},
            {t:"月夜の謎解き喫茶",u:""},{t:"今月の朗読",u:""}] },
 
-  { no:"07", name:"灯りの部屋",     x:64, y:72, open:false,
+  { no:"07", name:"灯りの部屋",     x:64, y:72, open:true,
     lead:"心を休めて、整える場所。",
-    items:["短い音声","30秒リセット","眠る前の言葉","呼吸・瞑想"] },
+    items:["短い音声","30秒リセット","眠る前の言葉","呼吸・瞑想"],
+    cta:"部屋に入る",
+    links:[{t:"30秒リセット",u:"https://yuwa-bloom-realm.github.io/30sec-reset/reset30.html?from=world"},
+           {t:"短い音声",u:""},{t:"眠る前の言葉",u:""},{t:"呼吸・瞑想",u:""}] },
 
   { no:"08", name:"ゆわに会える部屋", x:89, y:72, open:false,
     lead:"もっと深く話したい人のための場所。",
@@ -1020,11 +1046,31 @@ document.getElementById("tabPass").addEventListener("click", () => {
       </ul>
     </div>
     <div class="links" style="margin-top:16px">
-      <a class="link" href="${LINE_URL}" target="_blank" rel="noopener">
+      <a class="link" id="passNotify" href="javascript:void(0)">
         旅人証を受け取る<span>›</span></a>
+      <a class="link" href="${LINE_URL}" target="_blank" rel="noopener">
+        LINEでもつながる<span>›</span></a>
     </div>
-    <div class="intro-note">旅人証を受け取ると、新しい物語が届いたときにお知らせが届きます。</div>`;
+    <div class="intro-note" id="passNote">旅人証を受け取ると、新しい物語が届いたときにお知らせが届きます。</div>`;
   sheet.classList.add("up"); scrim.classList.add("on");
+
+  /* 「旅人証を受け取る」→ 通知の許可をお願いする */
+  const passBtn = document.getElementById("passNotify");
+  if(passBtn){
+    passBtn.addEventListener("click", async ()=>{
+      const note = document.getElementById("passNote");
+      if(note) note.textContent = "お知らせの受け取りを確認しています…";
+      const ok = await yuwaAskNotify();
+      if(ok){
+        passBtn.innerHTML = "✦ 旅人証を受け取りました";
+        passBtn.style.pointerEvents = "none";
+        passBtn.style.opacity = ".7";
+        if(note) note.textContent = "これで、新しい物語が届いたときにお知らせが届きます。";
+      }else{
+        if(note) note.textContent = "お知らせは今はオフのままです。いつでもここから受け取れます。";
+      }
+    });
+  }
 });
 
 /* --- この世界について --- */
@@ -1249,81 +1295,6 @@ gate.addEventListener("click",(e)=>{
 document.getElementById("skip").addEventListener("click",e=>{
   e.stopPropagation(); toWorld();
 });
-</script>
-
-<!-- ===== OneSignal（お知らせ通知）本編とは完全に独立 ===== -->
-<script>
-(function(){
-  /* 本編のスクリプトは上で全部動き終わっている。
-     ここから下は通知専用。何が起きても本編には触れない。 */
-  try{
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-    // SDKを読み込む（失敗しても本編は動いているので影響なし）
-    var s = document.createElement("script");
-    s.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
-    s.defer = true;
-    s.onerror = function(){ /* 読み込めなくても黙って本編続行 */ };
-    document.head.appendChild(s);
-
-    window.OneSignalDeferred.push(async function(OneSignal){
-      try{
-        await OneSignal.init({ appId: "a5cd3c2f-82b8-4a01-89c0-a57622d2aee0" });
-      }catch(e){}
-    });
-
-    // 通知の許可をお願いする関数
-    async function yuwaAskNotify(){
-      return new Promise(function(resolve){
-        try{
-          window.OneSignalDeferred.push(async function(OneSignal){
-            try{
-              await OneSignal.Notifications.requestPermission();
-              resolve(OneSignal.Notifications.permission === true);
-            }catch(e){ resolve(false); }
-          });
-        }catch(e){ resolve(false); }
-      });
-    }
-
-    /* 旅人証パネルが開かれたら「旅人証を受け取る」リンクを見つけて結線する。
-       本編のHTMLは書き換えず、後から探して動きだけ足す。 */
-    function wirePassButton(){
-      try{
-        var links = document.querySelectorAll('#sheetBody a.link');
-        for(var i=0;i<links.length;i++){
-          var a = links[i];
-          if(a.dataset.yuwaWired) continue;              // 二重結線を防ぐ
-          if(a.textContent.indexOf("旅人証を受け取る") === -1) continue;
-          a.dataset.yuwaWired = "1";
-          a.addEventListener("click", async function(ev){
-            try{ ev.preventDefault(); }catch(e){}
-            var self = this;
-            var note = self.parentNode ? self.parentNode.parentNode.querySelector('.intro-note') : null;
-            if(note) note.textContent = "お知らせの受け取りを確認しています…";
-            var ok = await yuwaAskNotify();
-            if(ok){
-              self.innerHTML = "✦ 旅人証を受け取りました";
-              self.style.pointerEvents = "none";
-              self.style.opacity = ".7";
-              if(note) note.textContent = "これで、新しい物語が届いたときにお知らせが届きます。";
-            }else{
-              if(note) note.textContent = "お知らせは今はオフのままです。いつでもここから受け取れます。";
-            }
-          });
-        }
-      }catch(e){}
-    }
-
-    // 旅人証タブが押されたら、少し待ってからボタンを結線
-    var passTab = document.getElementById("tabPass");
-    if(passTab){
-      passTab.addEventListener("click", function(){
-        setTimeout(wirePassButton, 50);
-      });
-    }
-  }catch(e){ /* 通知まわりで何かあっても本編は無傷 */ }
-})();
 </script>
 </body>
 </html>
