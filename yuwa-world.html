@@ -399,9 +399,87 @@ html,body{height:100%;overflow:hidden;background:var(--deep);color:var(--ink);
   color:var(--aqua);border-bottom:1px solid rgba(127,216,208,.4);padding-bottom:2px}
 .empty{text-align:center;padding:46px 0;font-size:13px;
   color:rgba(233,228,245,.4);line-height:2}
+
+/* ===== ホーム追加オンボーディング ===== */
+#onboard{position:fixed;inset:0;z-index:9999;display:none;
+  background:radial-gradient(120% 120% at 50% 0%,#141234 0%,#0a0a1f 70%);
+  overflow-y:auto;-webkit-overflow-scrolling:touch}
+#onboard.on{display:block}
+.ob-wrap{min-height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:34px 24px;gap:20px;text-align:center}
+.ob-crown{font-size:34px}
+.ob-ttl{font-size:20px;color:var(--gold);letter-spacing:.06em;line-height:1.6}
+.ob-lead{font-size:14px;line-height:2;color:rgba(233,228,245,.82);max-width:22em}
+.ob-card{width:100%;max-width:340px;background:rgba(16,14,38,.7);
+  border:1px solid rgba(232,200,135,.25);border-radius:18px;padding:20px 20px 22px;text-align:left}
+.ob-card-hd{font-size:13px;color:var(--aqua);letter-spacing:.1em;margin-bottom:14px;
+  display:flex;align-items:center;gap:8px}
+.ob-step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start}
+.ob-step:last-child{margin-bottom:0}
+.ob-num{flex:none;width:26px;height:26px;border-radius:50%;
+  background:rgba(232,200,135,.18);border:1px solid rgba(232,200,135,.45);
+  color:var(--gold);font-size:13px;display:flex;align-items:center;justify-content:center}
+.ob-tx{font-size:13.5px;line-height:1.7;color:rgba(233,228,245,.9);padding-top:2px}
+.ob-tx b{color:var(--gold);font-weight:600}
+.ob-ic{display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:6px;background:rgba(127,216,208,.15);
+  vertical-align:-6px;margin:0 2px}
+.ob-note{font-size:12px;line-height:1.9;color:rgba(233,228,245,.6);max-width:22em}
+.ob-btn{margin-top:6px;font-size:15px;color:#0a0a1f;background:var(--gold);
+  border:none;border-radius:99px;padding:14px 40px;font-family:inherit;
+  cursor:pointer;letter-spacing:.08em;font-weight:600}
+.ob-skip{font-size:12px;color:rgba(233,228,245,.5);
+  border-bottom:1px solid rgba(233,228,245,.3);padding-bottom:2px;cursor:pointer}
+.ob-tabbar{display:flex;gap:6px;justify-content:center;margin-bottom:2px}
+.ob-tab{font-size:12px;padding:6px 14px;border-radius:99px;cursor:pointer;
+  color:rgba(233,228,245,.6);border:1px solid rgba(233,228,245,.2)}
+.ob-tab.sel{color:var(--gold);border-color:rgba(232,200,135,.5);background:rgba(232,200,135,.12)}
 </style>
 </head>
 <body>
+
+<!-- ===== ホーム追加オンボーディング ===== -->
+<div id="onboard">
+  <div class="ob-wrap">
+    <div class="ob-crown">🕯️</div>
+    <div class="ob-ttl">ようこそ、<br>Yuwa Entertainment へ</div>
+    <div class="ob-lead">この世界を、いつでも開けるように。<br>ホーム画面に追加してお使いください。</div>
+
+    <div class="ob-tabbar">
+      <div class="ob-tab" id="obTabIos">iPhone</div>
+      <div class="ob-tab" id="obTabAnd">Android</div>
+    </div>
+
+    <!-- iPhone手順 -->
+    <div class="ob-card" id="obIos">
+      <div class="ob-card-hd">📱 iPhone の追加方法</div>
+      <div class="ob-step"><div class="ob-num">1</div>
+        <div class="ob-tx">画面下の<b>共有ボタン</b><span class="ob-ic">⬆️</span>をタップ</div></div>
+      <div class="ob-step"><div class="ob-num">2</div>
+        <div class="ob-tx">メニューを下にスクロール</div></div>
+      <div class="ob-step"><div class="ob-num">3</div>
+        <div class="ob-tx"><b>「ホーム画面に追加」</b>をタップ</div></div>
+      <div class="ob-step"><div class="ob-num">4</div>
+        <div class="ob-tx">右上の<b>「追加」</b>を押して完了</div></div>
+    </div>
+
+    <!-- Android手順 -->
+    <div class="ob-card" id="obAnd" style="display:none">
+      <div class="ob-card-hd">🤖 Android の追加方法</div>
+      <div class="ob-step"><div class="ob-num">1</div>
+        <div class="ob-tx">右上の<b>メニュー</b><span class="ob-ic">⋮</span>をタップ</div></div>
+      <div class="ob-step"><div class="ob-num">2</div>
+        <div class="ob-tx"><b>「ホーム画面に追加」</b>または<br><b>「アプリをインストール」</b>をタップ</div></div>
+      <div class="ob-step"><div class="ob-num">3</div>
+        <div class="ob-tx"><b>「追加」</b>を押して完了</div></div>
+    </div>
+
+    <div class="ob-note">ホーム画面に追加すると、新しい物語が届いたときに<br>お知らせを受け取れるようになります。</div>
+
+    <button class="ob-btn" id="obStart">はじめる</button>
+    <div class="ob-skip" id="obSkip">あとで追加する</div>
+  </div>
+</div>
 
 <!-- ===== 0. GATE ===== -->
 <div id="gate" class="layer on">
@@ -1295,6 +1373,47 @@ gate.addEventListener("click",(e)=>{
 document.getElementById("skip").addEventListener("click",e=>{
   e.stopPropagation(); toWorld();
 });
+
+/* ===== ホーム追加オンボーディング ===== */
+(function initOnboard(){
+  const ob = document.getElementById("onboard");
+  const OB_KEY = "yuwaOnboardSeen";
+
+  // 端末判定
+  const ua = navigator.userAgent || "";
+  const isIOS = /iPhone|iPad|iPod/.test(ua);
+  const isAndroid = /Android/.test(ua);
+  // すでにホーム画面アプリとして開いているか(iOS/Android両対応)
+  const standalone = window.navigator.standalone === true ||
+    (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+
+  // タブ切り替え
+  const tabIos = document.getElementById("obTabIos");
+  const tabAnd = document.getElementById("obTabAnd");
+  const cardIos = document.getElementById("obIos");
+  const cardAnd = document.getElementById("obAnd");
+  function showIos(){ cardIos.style.display=""; cardAnd.style.display="none";
+    tabIos.classList.add("sel"); tabAnd.classList.remove("sel"); }
+  function showAnd(){ cardAnd.style.display=""; cardIos.style.display="none";
+    tabAnd.classList.add("sel"); tabIos.classList.remove("sel"); }
+  tabIos.addEventListener("click", showIos);
+  tabAnd.addEventListener("click", showAnd);
+  // 端末に合わせて初期表示
+  if(isAndroid) showAnd(); else showIos();
+
+  // 閉じる処理
+  function closeOb(){ ob.classList.remove("on"); localStorage.setItem(OB_KEY,"1"); }
+  document.getElementById("obStart").addEventListener("click", closeOb);
+  document.getElementById("obSkip").addEventListener("click", closeOb);
+
+  // 表示条件:まだ見てない & ホーム追加アプリで開いていない
+  // (すでにアプリとして開いている人には不要なので出さない)
+  const seen = localStorage.getItem(OB_KEY) === "1";
+  if(!seen && !standalone){
+    // ゲートより手前に、最初に見せる
+    ob.classList.add("on");
+  }
+})();
 </script>
 </body>
 </html>
