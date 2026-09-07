@@ -31,6 +31,22 @@
       });
     });
   }
+
+  /* 「旅人証を受け取る」ボタンの本体(onclickから直接呼ばれる) */
+  async function yuwaReceivePass(){
+    const btn  = document.getElementById("passNotify");
+    const note = document.getElementById("passNote");
+    if(note) note.textContent = "お知らせの受け取りを確認しています…";
+    const ok = await yuwaAskNotify();
+    if(ok){
+      if(btn){ btn.innerHTML = "✦ 旅人証を受け取りました";
+        btn.style.pointerEvents = "none"; btn.style.opacity = ".7"; }
+      if(note) note.textContent = "これで、新しい物語が届いたときにお知らせが届きます。";
+    }else{
+      if(note) note.textContent = "お知らせは今はオフのままです。いつでもここから受け取れます。";
+    }
+  }
+  window.yuwaReceivePass = yuwaReceivePass;
 </script>
 <style>
 :root{
@@ -1046,31 +1062,14 @@ document.getElementById("tabPass").addEventListener("click", () => {
       </ul>
     </div>
     <div class="links" style="margin-top:16px">
-      <a class="link" id="passNotify" href="javascript:void(0)">
+      <a class="link" id="passNotify" href="javascript:void(0)"
+         onclick="yuwaReceivePass()">
         旅人証を受け取る<span>›</span></a>
       <a class="link" href="${LINE_URL}" target="_blank" rel="noopener">
         LINEでもつながる<span>›</span></a>
     </div>
     <div class="intro-note" id="passNote">旅人証を受け取ると、新しい物語が届いたときにお知らせが届きます。</div>`;
   sheet.classList.add("up"); scrim.classList.add("on");
-
-  /* 「旅人証を受け取る」→ 通知の許可をお願いする */
-  const passBtn = document.getElementById("passNotify");
-  if(passBtn){
-    passBtn.addEventListener("click", async ()=>{
-      const note = document.getElementById("passNote");
-      if(note) note.textContent = "お知らせの受け取りを確認しています…";
-      const ok = await yuwaAskNotify();
-      if(ok){
-        passBtn.innerHTML = "✦ 旅人証を受け取りました";
-        passBtn.style.pointerEvents = "none";
-        passBtn.style.opacity = ".7";
-        if(note) note.textContent = "これで、新しい物語が届いたときにお知らせが届きます。";
-      }else{
-        if(note) note.textContent = "お知らせは今はオフのままです。いつでもここから受け取れます。";
-      }
-    });
-  }
 });
 
 /* --- この世界について --- */
