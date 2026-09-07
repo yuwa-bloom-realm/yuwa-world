@@ -17,6 +17,13 @@
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
       appId: "a5cd3c2f-82b8-4a01-89c0-a57622d2aee0",
+      autoResubscribe: true,
+      // 自動の購読プロンプト(英語のSubscribe/Later)を出さない。
+      // 通知許可は「旅人証を受け取る」ボタンからだけ行う。
+      autoRegister: false,
+      promptOptions: {
+        slidedown: { prompts: [] }
+      }
     });
   });
   /* 旅人証ボタンから呼ぶ：通知の許可をお願いする */
