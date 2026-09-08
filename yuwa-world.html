@@ -625,9 +625,13 @@ const AREAS = [
     intro:true,
     cta:"", url:"" },
 
-  { no:"02", name:"物語と体験の街", x:71, y:20, open:false,
-    lead:"毎月のメインEntertainmentが楽しめる街。",
-    items:["物語・映像・音楽・イラスト","選択・謎解き・ゲーム","心理学・脳科学のエッセンス"] },
+  { no:"02", name:"物語と体験の街", x:71, y:20, open:true,
+    lead:"いつでも遊びに来られる街。物語ゲームは、途中からでも、また続きから始められます。",
+    items:["影の魔王と光の旅","月夜の謎解き喫茶","あなたは今夜誰を演じますか？","選択・謎解き・ゲーム","心理学・脳科学のエッセンス"],
+    cta:"街へ入る",
+    links:[{t:"影の魔王と光の旅",u:"https://yuwa-bloom-realm.github.io/kage-no-maou/kage_no_maou_game.html"},
+           {t:"月夜の謎解き喫茶",u:""},
+           {t:"あなたは今夜誰を演じますか？",u:""}] },
 
   { no:"03", name:"守り星の森",     x:20, y:27, open:false,
     lead:"守護神たちと出会う森。選択によって出会う存在が変わります。",
@@ -646,12 +650,12 @@ const AREAS = [
     cta:"天文台へ入る",
     links:[{t:"こころ星座プラネタリウム",u:"https://yuwa-bloom-realm.github.io/yuwa-planetarium/"}] },
 
-  { no:"06", name:"月夜の劇場",     x:41, y:45, open:true,
-    lead:"ライブや上映会が行われる場所。今夜は、どの物語に会いにいきますか。",
-    items:["月1回のライブ","プレミア上映","季節の特別公演","朗読・音楽・映像"],
+  { no:"06", name:"月夜の劇場",     x:41, y:45, open:false,
+    lead:"朗読や公演が行われる場所。声と物語で、今夜のあなたに会いにいきます。",
+    items:["今月の朗読","季節の特別公演","月1回のライブ","朗読・音楽・映像"],
     cta:"劇場に入る",
-    links:[{t:"影の魔王",u:"https://yuwa-bloom-realm.github.io/kage-no-maou/kage_no_maou_game.html"},
-           {t:"月夜の謎解き喫茶",u:""},{t:"今月の朗読",u:""}] },
+    links:[{t:"今月の朗読",u:""},
+           {t:"季節の特別公演",u:""}] },
 
   { no:"07", name:"灯りの部屋",     x:64, y:48, open:true,
     lead:"心を休めて、整える場所。",
@@ -1018,9 +1022,13 @@ sheet.addEventListener("touchend",e=>{
    id は必ず新しい文字列に（既読判定に使う）
    ========================================================= */
 const LETTERS = [
-  { id:"2026-07-b", date:"2026.07.15", title:"月夜の劇場、開きました",
-    body:"劇場の扉が開きました。\n今月は「月夜の謎解き喫茶」を上映しています。\n\nゆっくり、あなたのペースでどうぞ。",
-    go:{t:"月夜の劇場へ", u:"https://yuwa-bloom-realm.github.io/kage-no-maou/kage_no_maou_game.html"} },
+  { id:"2026-09-b", date:"2026.09.09", title:"物語と体験の街が、開きました",
+    body:"街の灯りが、ともりました。\n「影の魔王と光の旅」、いつでも遊びに来てください。\n途中からでも、また続きから始められます。",
+    go:{t:"街へ入る", u:"https://yuwa-bloom-realm.github.io/kage-no-maou/kage_no_maou_game.html"} },
+
+  { id:"2026-09-a", date:"2026.09.09", title:"灯りの部屋に「30秒リセット」が届きました",
+    body:"心がすこし疲れたときに。\nたった30秒で、そっと整える時間をどうぞ。\n\n灯りの部屋で、いつでも。",
+    go:{t:"30秒リセットへ", u:"https://yuwa-bloom-realm.github.io/30sec-reset/reset30.html?from=world"} },
 
   { id:"2026-07-a", date:"2026.07.01", title:"7月の言の葉カードが届きました",
     body:"今月の言葉は「ゆるむ」。\n言の葉の庭で受け取れます。",
