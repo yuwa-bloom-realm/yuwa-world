@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>今夜の、あなたの一粒</title>
+<style>
+:root{
+  --ink:#0b1026;--ink2:#151c3d;--gold:#d9b45e;--gold-soft:#f0d9a0;
+  --aqua:#7fd8d0;--paper:#f6f1e4;--muted:#8a90ad;
+  /* 宝石シート：12列 × 4段、1マス181px、全体2172×724 */
+  --sheet-w:2172px; --sheet-h:724px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--ink);color:var(--paper);
+  font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+  min-height:100vh;overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(1.2px 1.2px at 12% 18%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 12%, #fff 50%, transparent 51%),
+    radial-gradient(1.4px 1.4px at 34% 62%, var(--gold-soft) 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 55%, #fff 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 22% 88%, var(--aqua) 50%, transparent 51%),
+    radial-gradient(1px 1px at 62% 78%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 48% 30%, #fff 50%, transparent 51%),
+    radial-gradient(1.3px 1.3px at 92% 84%, var(--gold-soft) 50%, transparent 51%);
+  opacity:.6;
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(120% 80% at 50% 8%, rgba(31,90,99,.35), transparent 60%),
+             radial-gradient(120% 90% at 50% 100%, rgba(43,63,122,.35), transparent 60%);
+}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:28px 18px 100px}
+.brand{text-align:center;margin-bottom:20px}
+.brand .mark{
+  font-size:11px;letter-spacing:.32em;color:var(--gold);
+  border:1px solid rgba(217,180,94,.4);border-radius:999px;
+  display:inline-block;padding:5px 14px 5px 17px;margin-bottom:14px;
+}
+.brand h1{
+  font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
+  font-size:26px;font-weight:600;margin:0;letter-spacing:.14em;
+  background:linear-gradient(180deg,#fff,var(--gold-soft));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.brand p{margin:10px 0 0;font-size:12px;color:var(--muted);letter-spacing:.08em;line-height:1.8}
+.sky{
+  position:relative;height:min(58vh,440px);margin:18px 0 8px;
+  border:1px solid rgba(127,216,208,.18);border-radius:22px;overflow:hidden;
+  background:radial-gradient(90% 70% at 50% 20%, rgba(127,216,208,.10), transparent 70%),
+    linear-gradient(180deg, rgba(21,28,61,.6), rgba(11,16,38,.6));
+}
+.guide{
+  position:absolute;left:0;right:0;top:14px;text-align:center;
+  font-family:"Hiragino Mincho ProN",serif;font-size:13.5px;letter-spacing:.12em;
+  color:rgba(246,241,228,.82);z-index:3;pointer-events:none;transition:opacity .6s;
+}
+
+/* 宝石（スプライト） */
+.gem{
+  background-repeat:no-repeat;
+  filter:drop-shadow(0 0 7px rgba(180,235,230,.55));
+}
+.orb{
+  position:absolute;cursor:pointer;
+  transition:transform .55s cubic-bezier(.2,.9,.3,1),opacity .6s;
+  animation:float 6s ease-in-out infinite;will-change:transform;
+}
+/* きらめき（光条） */
+.orb::after{
+  content:"";position:absolute;inset:-30%;
+  background:
+    radial-gradient(closest-side, rgba(255,255,255,.9), transparent 70%) center/22% 3% no-repeat,
+    radial-gradient(closest-side, rgba(255,255,255,.9), transparent 70%) center/3% 22% no-repeat;
+  opacity:0;animation:twinkle 4s ease-in-out infinite;pointer-events:none;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes twinkle{0%,70%,100%{opacity:0}82%{opacity:.9}}
+.orb.dim{opacity:.12;pointer-events:none}
+
+.reveal{
+  position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;
+  padding:24px;background:rgba(6,9,22,.85);
+}
+.reveal.on{display:flex}
+.jewel-card{
+  position:relative;max-width:360px;width:100%;
+  background:linear-gradient(180deg,#f6f1e4,#e6ddc9);
+  border-radius:20px;padding:30px 26px 26px;color:#1a2038;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+  transform:scale(.92);opacity:0;transition:transform .5s cubic-bezier(.2,.9,.3,1),opacity .5s;
+  text-align:center;
+}
+.reveal.on .jewel-card{transform:scale(1);opacity:1}
+.jewel-stage{height:170px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;position:relative}
+.jewel-stage .big{width:150px;height:150px;position:relative}
+.jewel-stage .big .gem{filter:drop-shadow(0 10px 26px rgba(0,0,0,.28)) drop-shadow(0 0 14px rgba(217,180,94,.4))}
+.jewel-card .kd{font-size:11px;letter-spacing:.28em;color:#a8823a;margin-bottom:8px}
+.jewel-card .word{font-family:"Hiragino Mincho ProN",serif;font-size:25px;font-weight:600;letter-spacing:.1em;margin:2px 0 4px;line-height:1.5}
+.jewel-card .yomi{font-size:12px;color:#7a6a3e;letter-spacing:.18em;margin-bottom:14px}
+.jewel-card .mean{font-size:13.5px;line-height:2;color:#3a3f57;margin:0 6px 16px}
+.jewel-card .traits{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.jewel-card .trait{font-size:10.5px;letter-spacing:.06em;color:#6a5a2e;border:1px solid rgba(168,130,58,.4);border-radius:999px;padding:4px 11px}
+.jewel-card .only{font-family:"Hiragino Mincho ProN",serif;font-size:13px;color:#a8823a;letter-spacing:.1em;margin-bottom:18px}
+.jewel-card button{width:100%;border:none;border-radius:12px;padding:13px;font-size:13.5px;letter-spacing:.08em;font-family:inherit;cursor:pointer;margin-top:10px}
+.btn-keep{background:linear-gradient(180deg,#2b3f7a,#1f2a55);color:#f6f1e4}
+.btn-again{background:transparent;color:#6a5a2e;border:1px solid rgba(168,130,58,.5)}
+.coll{margin-top:30px}
+.coll-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.coll-head .lbl{font-size:12px;letter-spacing:.2em;color:var(--gold)}
+.coll-head .cnt{font-size:12px;color:var(--muted)}
+.coll-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cell{
+  border-radius:14px;border:1px solid rgba(127,216,208,.14);background:rgba(21,28,61,.5);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;
+  overflow:hidden;padding:12px 6px 18px;
+}
+.cell .cg{width:56px;height:56px;position:relative}
+.cell .dot{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:9px;color:var(--muted)}
+.empty-note{grid-column:1/-1;text-align:center;color:var(--muted);font-size:12px;padding:24px 0;line-height:1.9}
+.foot{text-align:center;margin-top:26px;font-size:10.5px;color:var(--muted);letter-spacing:.14em}
+.toast{
+  position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);
+  background:rgba(11,16,38,.95);border:1px solid rgba(217,180,94,.4);color:var(--paper);
+  font-size:12.5px;letter-spacing:.06em;padding:11px 20px;border-radius:999px;
+  opacity:0;transition:.4s;z-index:30;pointer-events:none;
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div class="mark">TONIGHT'S ONE</div>
+    <h1>今夜の、あなたの一粒</h1>
+    <p>目をつぶって、心が呼ぶひとつを選んでください。<br>それは、今夜のあなただけの一粒になります。</p>
+  </div>
+  <div class="sky" id="sky">
+    <div class="guide" id="guide">そっと、ひとつ選んで</div>
+  </div>
+  <div class="coll">
+    <div class="coll-head">
+      <span class="lbl">あつめた一粒</span>
+      <span class="cnt" id="cnt">0 粒</span>
+    </div>
+    <div class="coll-grid" id="collGrid"></div>
+  </div>
+  <div class="foot">YUWA ENTERTAINMENT ・ 空の世界</div>
+</div>
+<div class="reveal" id="reveal"><div class="jewel-card" id="jewelCard"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ===== 宝石シートの場所（GitHubに jewels.png を同じフォルダに置く） ===== */
+var SHEET_URL='jewels.png';   // ← 同じフォルダに置く場合はこのまま
+var COLS=12, ROWS=4, CELL_W=181, CELL_H=181;
+
+/* ===== 保存（言の葉パスポートと同じ localStorage 作法） ===== */
+var KEY='yuwa_hitotsubu_v2', LS=null;
+try{LS=window.localStorage;LS.setItem('__t','1');LS.removeItem('__t');}catch(e){LS=null;}
+function load(){try{return LS?(JSON.parse(LS.getItem(KEY))||[]):[];}catch(e){return[];}}
+function save(){try{if(LS)LS.setItem(KEY,JSON.stringify(coll));}catch(e){}}
+var coll=load();
+
+/* ===== 色（和の伝統色・12色。シートの列順と一致） ===== */
+var COLORS=['浅葱','群青','瑠璃','菫','藤','桜','珊瑚','山吹','蜂蜜','曙','若草','白銀'];
+/* ===== 形（シートの段順と一致） ===== */
+var SHAPES=['まる','しずく','六角','星'];
+
+/* ===== 古の言の葉（たたき台。あとで ゆわ の言葉に差し替え可） ===== */
+var WORDS=[
+  {w:'和ぐ',y:'NAGU',m:'ざわめいた心が、しずかに凪いでゆく。今夜は、それでいい。'},
+  {w:'灯',y:'TOMOSHIBI',m:'どんな夜にも、あなたの内には小さな灯がともっている。'},
+  {w:'巡り',y:'MEGURI',m:'今は見えなくても、季節のように、また巡りあう。'},
+  {w:'ほどける',y:'HODOKERU',m:'固く結んだものを、今夜すこしだけ、ほどいてみよう。'},
+  {w:'安らけし',y:'YASURAKESHI',m:'何もしないその時間こそ、心を満たしている。'},
+  {w:'まなざし',y:'MANAZASHI',m:'人に向けるやさしさで、自分のことも見てあげて。'},
+  {w:'しののめ',y:'SHINONOME',m:'いちばん暗い刻ののちに、東の空は白みはじめる。'},
+  {w:'あゆみ',y:'AYUMI',m:'大きく飛ばずとも、半歩でも、それは確かな前。'},
+  {w:'まもり',y:'MAMORI',m:'あなたを守るものは、思うよりずっと近くにある。'},
+  {w:'めぐりあひ',y:'MEGURIAI',m:'今日のこの一粒も、二度と同じには出会えない。'},
+  {w:'きざし',y:'KIZASHI',m:'まだ言葉にならない予感を、そっとあたためて。'},
+  {w:'とどく',y:'TODOKU',m:'あなたの声は、思うより遠くまで、ちゃんと届いている。'},
+  {w:'ゆだねる',y:'YUDANERU',m:'抱えきれない時は、流れにそっと身をあずけて。'},
+  {w:'ほほゑむ',y:'HOHOEMU',m:'無理に笑わなくていい。ゆるむ口もとを、待てばいい。'},
+  {w:'したしむ',y:'SHITASHIMU',m:'今のあなたのまま、この夜と親しんで。'},
+  {w:'いのり',y:'INORI',m:'言葉にしたねがいは、星になってどこかへ届く。'}
+];
+
+/* ===== 宝石を作る（スプライトから色×形を切り出し） ===== */
+function gemEl(spec,box){
+  // box: 表示ピクセルサイズ（正方形）
+  var scale=box/CELL_W;
+  var el=document.createElement('div');
+  el.className='gem';
+  el.style.width=box+'px';
+  el.style.height=box+'px';
+  el.style.backgroundImage='url('+SHEET_URL+')';
+  el.style.backgroundSize=(CELL_W*COLS*scale)+'px '+(CELL_H*ROWS*scale)+'px';
+  el.style.backgroundPosition='-'+(spec.color*CELL_W*scale)+'px -'+(spec.shape*CELL_H*scale)+'px';
+  return el;
+}
+
+function randomSpec(){
+  return {
+    color:Math.floor(Math.random()*COLS),
+    shape:Math.floor(Math.random()*ROWS),
+    word :Math.floor(Math.random()*WORDS.length),
+    at:Date.now()
+  };
+}
+
+/* ===== 空に撒く ===== */
+var sky=document.getElementById('sky'), guide=document.getElementById('guide'), orbSpecs=[];
+function scatterOrbs(){
+  var olds=sky.querySelectorAll('.orb');
+  for(var q=0;q<olds.length;q++){olds[q].parentNode.removeChild(olds[q]);}
+  guide.style.opacity='1';
+  orbSpecs=[];
+  var cols=3,rows=3,pad=14;
+  var w=sky.clientWidth||320, h=sky.clientHeight||400;
+  var cw=(w-pad*2)/cols, ch=(h-pad*2-30)/rows, idx=0;
+  for(var r=0;r<rows;r++){
+    for(var c=0;c<cols;c++){
+      var spec=randomSpec();orbSpecs.push(spec);
+      var el=document.createElement('div');el.className='orb';
+      var size=56+Math.random()*16;
+      el.style.width=size+'px';el.style.height=size+'px';
+      var jx=(Math.random()-.5)*cw*0.4, jy=(Math.random()-.5)*ch*0.4;
+      el.style.left=(pad+c*cw+cw/2-size/2+jx)+'px';
+      el.style.top=(pad+30+r*ch+ch/2-size/2+jy)+'px';
+      el.style.animationDelay=(Math.random()*4)+'s';
+      el.appendChild(gemEl(spec,size));
+      (function(k,node){node.onclick=function(){choose(k,node);};})(idx,el);
+      sky.appendChild(el);idx++;
+    }
+  }
+}
+
+function choose(i,el){
+  var spec=orbSpecs[i];
+  guide.style.opacity='0';
+  var all=sky.querySelectorAll('.orb');
+  for(var q=0;q<all.length;q++){if(all[q]!==el)all[q].className='orb dim';}
+  el.style.animation='none';
+  try{
+    var skyRect=sky.getBoundingClientRect(), elRect=el.getBoundingClientRect();
+    var dx=(skyRect.width/2)-(elRect.left-skyRect.left+elRect.width/2);
+    var dy=(skyRect.height/2)-(elRect.top-skyRect.top+elRect.height/2);
+    el.style.transform='translate('+dx+'px,'+dy+'px) scale(1.7)';
+  }catch(e){}
+  setTimeout(function(){openReveal(spec);},700);
+}
+
+var reveal=document.getElementById('reveal'), jewelCard=document.getElementById('jewelCard');
+function openReveal(spec){
+  var w=WORDS[spec.word];
+  jewelCard.innerHTML='';
+  var stage=document.createElement('div');stage.className='jewel-stage';
+  var big=document.createElement('div');big.className='big';
+  big.appendChild(gemEl(spec,150));
+  stage.appendChild(big);
+  jewelCard.appendChild(stage);
+  var rest=document.createElement('div');
+  rest.innerHTML=
+    '<div class="kd">TONIGHT\'S ONE</div>'+
+    '<div class="word">'+w.w+'</div>'+
+    '<div class="yomi">'+w.y+'</div>'+
+    '<p class="mean">'+w.m+'</p>'+
+    '<div class="traits">'+
+      '<span class="trait">'+COLORS[spec.color]+'</span>'+
+      '<span class="trait">'+SHAPES[spec.shape]+'</span>'+
+    '</div>'+
+    '<div class="only">— これは、今夜のあなただけの一粒 —</div>'+
+    '<button class="btn-keep" id="keep">この一粒を、そっと持ち帰る</button>'+
+    '<button class="btn-again" id="again">もう一度、空を見る</button>';
+  jewelCard.appendChild(rest);
+  reveal.className='reveal on';
+  document.getElementById('keep').onclick=function(){keep(spec);};
+  document.getElementById('again').onclick=function(){reveal.className='reveal';scatterOrbs();};
+}
+
+function keep(spec){
+  coll.unshift(spec);save();renderColl();
+  reveal.className='reveal';
+  toast('あなたの空に、一粒が加わりました');
+  scatterOrbs();
+}
+
+var collGrid=document.getElementById('collGrid'), cntEl=document.getElementById('cnt');
+function renderColl(){
+  cntEl.textContent=coll.length+' 粒';
+  collGrid.innerHTML='';
+  if(coll.length===0){
+    collGrid.innerHTML='<div class="empty-note">まだ、ひとつも選んでいません。<br>空から、今夜の一粒を受け取ってみて。</div>';
+    return;
+  }
+  for(var i=0;i<coll.length;i++){
+    (function(spec){
+      var el=document.createElement('div');el.className='cell';
+      var g=document.createElement('div');g.className='cg';
+      g.appendChild(gemEl(spec,56));
+      el.appendChild(g);
+      var dot=document.createElement('span');dot.className='dot';dot.textContent=WORDS[spec.word].w;
+      el.appendChild(dot);
+      el.onclick=function(){openReveal(spec);};
+      collGrid.appendChild(el);
+    })(coll[i]);
+  }
+}
+
+var toastEl=document.getElementById('toast');
+function toast(msg){toastEl.textContent=msg;toastEl.className='toast on';
+  clearTimeout(toast._t);toast._t=setTimeout(function(){toastEl.className='toast';},2400);}
+
+var _rz;
+window.addEventListener('resize',function(){clearTimeout(_rz);_rz=setTimeout(scatterOrbs,300);});
+scatterOrbs();
+renderColl();
+
+})();
+</script>
+</body>
+</html>
