@@ -2,6 +2,9 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Yuwa Entertainment World</title>
 <link rel="apple-touch-icon" href="app-icon.png">
@@ -1439,6 +1442,35 @@ document.getElementById("skip").addEventListener("click",e=>{
     // ゲートより手前に、最初に見せる
     ob.classList.add("on");
   }
+})();
+</script>
+
+<!-- ===== 自動更新の仕組み ===== -->
+<script>
+(function(){
+  var MY_VERSION="2026.09.09.1";
+  // version.json を確認して、新しければ自動リロード
+  function checkUpdate(){
+    fetch('version.json?t='+Date.now(),{cache:'no-store'})
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(data && data.version && data.version!==MY_VERSION){
+          // 新しいバージョンがある → 静かにリロード
+          if('caches' in window){
+            caches.keys().then(function(names){
+              names.forEach(function(n){caches.delete(n);});
+            });
+          }
+          location.reload(true);
+        }
+      })
+      .catch(function(){/* version.json が無くても何もしない */});
+  }
+  // 開いた時＆アプリに戻ってきた時にチェック
+  checkUpdate();
+  document.addEventListener('visibilitychange',function(){
+    if(!document.hidden) checkUpdate();
+  });
 })();
 </script>
 </body>
