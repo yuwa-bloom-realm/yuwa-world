@@ -420,8 +420,13 @@ var toastEl=document.getElementById('toast');
 function toast(msg){toastEl.textContent=msg;toastEl.className='toast on';
   clearTimeout(toast._t);toast._t=setTimeout(function(){toastEl.className='toast';},2400);}
 
-var _rz;
-window.addEventListener('resize',function(){clearTimeout(_rz);_rz=setTimeout(scatterOrbs,300);});
+var _rz, _lastW=window.innerWidth;
+window.addEventListener('resize',function(){
+  // 横幅が実際に変わった時だけ撒き直す（スクロールでのアドレスバー開閉＝高さ変化では撒き直さない）
+  if(window.innerWidth===_lastW) return;
+  _lastW=window.innerWidth;
+  clearTimeout(_rz);_rz=setTimeout(scatterOrbs,300);
+});
 scatterOrbs();
 renderColl();
 
