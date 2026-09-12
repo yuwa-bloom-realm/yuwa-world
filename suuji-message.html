@@ -512,7 +512,7 @@ inputEl.addEventListener('keydown', (e)=>{
 
 document.getElementById('againBtn').addEventListener('click', ()=>{
   document.getElementById('resultScreen').classList.remove('show');
-  document.getElementById('inputScreen').style.display = 'flex';
+  document.getElementById('inputScreen').style.display = 'block';
   inputEl.value = '';
   errorEl.textContent = '';
   window.scrollTo({top:0, behavior:'smooth'});
