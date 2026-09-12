@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>数字からのメッセージ | Yuwa Entertainment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Noto+Serif+JP:wght@400;600;700&family=Shippori+Mincho:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#070c1e;
+    --navy:#0e1c3d;
+    --navy-mid:#16295a;
+    --gold:#d9b878;
+    --gold-soft:#e9d7ab;
+    --cream:#f6efe0;
+    --ink:#2b2415;
+    --lavender:#b9b3e6;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at 50% 8%, rgba(217,184,120,0.14), transparent 55%),
+      linear-gradient(180deg, var(--navy-deep) 0%, var(--navy) 45%, var(--navy-mid) 100%);
+    font-family:'Noto Serif JP','Shippori Mincho',serif;
+    color:var(--cream);
+    display:flex;
+    justify-content:center;
+    overflow-x:hidden;
+    position:relative;
+  }
+  #stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
+  .star{position:absolute;background:#fff;border-radius:50%;opacity:0.8;animation:twinkle 3.5s ease-in-out infinite;}
+  @keyframes twinkle{0%,100%{opacity:.25;}50%{opacity:1;}}
+  .stage{
+    position:relative;z-index:1;
+    width:100%;max-width:480px;
+    padding:38px 20px 60px;
+    display:flex;flex-direction:column;align-items:center;
+  }
+
+  /* Header ornament */
+  .brand{
+    letter-spacing:.28em;font-size:12px;color:var(--gold-soft);
+    font-family:'Cormorant Garamond',serif;text-align:center;margin-bottom:10px;
+  }
+  .divider{display:flex;align-items:center;gap:10px;width:180px;margin:0 auto 22px;}
+  .divider .line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+  .divider .glyph{color:var(--gold);font-size:13px;transform:rotate(0deg);}
+
+  .arch-wrap{position:relative;width:100%;max-width:340px;aspect-ratio:1/1;min-height:260px;margin:4px auto 18px;}
+  .arch-glow{
+    position:absolute;inset:0;border-radius:50% 50% 46% 46%/60% 60% 40% 40%;
+    background:radial-gradient(ellipse at 50% 40%, rgba(255,235,190,0.55), rgba(255,214,140,0.18) 45%, transparent 72%);
+    filter:blur(2px);
+  }
+  .arch-svg{position:absolute;inset:0;width:100%;height:100%;}
+  .moon{position:absolute;top:6%;right:8%;width:15%;filter:drop-shadow(0 0 10px rgba(255,244,214,.6));}
+
+  h1{
+    font-family:'Shippori Mincho',serif;
+    font-weight:700;
+    text-align:center;
+    font-size:clamp(30px,8vw,40px);
+    line-height:1.35;
+    margin:0 0 4px;
+    background:linear-gradient(180deg,#fff6df,var(--gold-soft) 60%,var(--gold));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 22px rgba(217,184,120,.25);
+  }
+  .subtitle-en{
+    text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;
+    color:var(--lavender);letter-spacing:.08em;font-size:15px;margin-bottom:16px;
+  }
+  .lead{
+    text-align:center;font-size:14.5px;line-height:2;color:var(--cream);opacity:.92;
+    margin:0 auto 26px;max-width:320px;
+  }
+
+  .panel{
+    width:100%;
+    background:linear-gradient(180deg,#fdfaf3,#f3ead4);
+    border:1px solid rgba(217,184,120,.9);
+    border-radius:20px;
+    padding:20px 22px;
+    box-shadow:0 10px 34px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.4);
+    color:var(--ink);
+    text-align:center;
+    margin-bottom:18px;
+  }
+  .panel .feather{font-size:20px;display:block;margin-bottom:6px;color:#b08a4a;}
+  .panel label{display:block;font-size:16px;font-weight:600;margin-bottom:6px;}
+  .panel .hint{font-size:12.5px;color:#8a7a55;margin-bottom:14px;}
+  .panel input{
+    width:100%;text-align:center;font-size:22px;letter-spacing:.08em;
+    font-family:'Cormorant Garamond',serif;font-weight:600;
+    border:none;border-bottom:1px solid #c9b284;background:transparent;
+    padding:8px 4px;color:var(--ink);outline:none;
+  }
+  .panel input:focus{border-bottom:1px solid #8a6a2f;}
+  .error-msg{color:#a23b3b;font-size:12.5px;margin-top:8px;min-height:16px;}
+
+  .cta{
+    width:100%;
+    background:linear-gradient(180deg,#16295a,#0b1533);
+    border:1px solid var(--gold);
+    color:var(--cream);
+    font-family:'Noto Serif JP',serif;
+    font-size:16px;font-weight:600;letter-spacing:.05em;
+    padding:15px 20px;border-radius:999px;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    cursor:pointer;
+    box-shadow:0 8px 22px rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.06);
+    transition:transform .15s ease, box-shadow .15s ease;
+    margin-bottom:30px;
+  }
+  .cta:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(0,0,0,.45);}
+  .cta:active{transform:translateY(0);}
+  .cta .arrow{color:var(--gold-soft);font-size:18px;}
+
+  .benefits{width:100%;display:flex;justify-content:space-between;gap:10px;margin-bottom:8px;}
+  .benefit{flex:1;text-align:center;}
+  .benefit .icon{
+    width:52px;height:52px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fffaf0, #efe3c8);
+    border:1px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 8px;font-size:20px;color:#8a6a2f;
+    box-shadow:0 4px 12px rgba(0,0,0,.3);
+  }
+  .benefit .btitle{font-size:12.5px;font-weight:700;margin-bottom:4px;color:var(--cream);}
+  .benefit .bdesc{font-size:11px;line-height:1.6;color:var(--cream);opacity:.75;}
+
+  .footer{margin-top:20px;text-align:center;}
+  .footer .fname{font-family:'Cormorant Garamond',serif;letter-spacing:.22em;font-size:13px;color:var(--gold-soft);}
+  .footer .ftag{font-family:'Cormorant Garamond',serif;letter-spacing:.14em;font-size:10px;color:var(--lavender);margin-top:4px;}
+
+  /* Result screen */
+  #resultScreen{display:none;width:100%;flex-direction:column;align-items:center;}
+  #resultScreen.show{display:flex;animation:fadein .6s ease both;}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  .result-number{
+    font-family:'Cormorant Garamond',serif;font-weight:600;
+    font-size:clamp(46px,15vw,64px);
+    text-align:center;letter-spacing:.06em;
+    background:linear-gradient(180deg,#fff6df,var(--gold));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin-bottom:2px;
+  }
+  .result-title{
+    text-align:center;font-size:19px;font-weight:700;margin-bottom:18px;color:var(--cream);
+  }
+  .badge{
+    display:inline-block;font-family:'Cormorant Garamond',serif;font-size:11.5px;letter-spacing:.14em;
+    color:var(--navy-deep);background:var(--gold-soft);padding:3px 12px;border-radius:999px;margin-bottom:14px;
+  }
+  .badge.alt{background:transparent;border:1px solid var(--lavender);color:var(--lavender);}
+
+  .card{
+    width:100%;background:rgba(246,239,224,.06);
+    border:1px solid rgba(217,184,120,.4);border-radius:16px;
+    padding:18px 20px;margin-bottom:14px;
+    backdrop-filter:blur(2px);
+  }
+  .card h3{
+    margin:0 0 10px;font-size:13px;letter-spacing:.1em;color:var(--gold-soft);
+    display:flex;align-items:center;gap:8px;
+  }
+  .card h3::before{content:'✦';font-size:11px;}
+  .card p{margin:0;font-size:14.5px;line-height:2;color:var(--cream);}
+  .core-line{font-size:13.5px;color:var(--lavender);margin-bottom:2px;}
+
+  .symbol-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+  .symbol-chip{
+    background:rgba(217,184,120,.12);border:1px solid rgba(217,184,120,.5);
+    border-radius:10px;padding:8px 10px;font-size:12.5px;flex:1 1 auto;min-width:44%;
+  }
+  .symbol-chip .num{font-family:'Cormorant Garamond',serif;font-weight:700;color:var(--gold-soft);margin-right:6px;font-size:15px;}
+  .symbol-chip.repeat{border-color:var(--gold);background:rgba(217,184,120,.22);}
+  .reduce-line{font-size:13px;color:var(--cream);opacity:.85;margin-top:10px;padding-top:10px;border-top:1px dashed rgba(217,184,120,.35);}
+
+  .question-card p{font-style:italic;font-family:'Cormorant Garamond',serif;font-size:19px;line-height:1.7;color:#fff8ea;text-align:center;}
+
+  .notice{font-size:11.5px;line-height:1.9;color:var(--cream);opacity:.6;text-align:center;margin:6px 0 22px;}
+
+  .again-btn{
+    width:100%;background:transparent;border:1px solid var(--gold);color:var(--gold-soft);
+    font-family:'Noto Serif JP',serif;font-size:15px;padding:13px 20px;border-radius:999px;
+    cursor:pointer;margin-bottom:10px;
+  }
+  .again-btn:hover{background:rgba(217,184,120,.1);}
+
+  @media (max-width:360px){
+    .benefit .bdesc{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+
+<div class="stage">
+
+  <div class="brand">Y U W A&nbsp; E N T E R T A I N M E N T</div>
+  <div class="divider"><span class="line"></span><span class="glyph">✦</span><span class="line"></span></div>
+
+  <!-- ===== 入口画面 ===== -->
+  <div id="inputScreen">
+
+    <div class="arch-wrap">
+      <div class="arch-glow"></div>
+      <svg class="arch-svg" viewBox="0 0 300 300">
+        <defs>
+          <linearGradient id="goldline" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f3e2b8"/>
+            <stop offset="100%" stop-color="#b8944f"/>
+          </linearGradient>
+        </defs>
+        <!-- staircase -->
+        <g stroke="url(#goldline)" stroke-width="1.4" opacity="0.85">
+          <line x1="118" y1="235" x2="182" y2="235"/>
+          <line x1="122" y1="222" x2="178" y2="222"/>
+          <line x1="126" y1="209" x2="174" y2="209"/>
+          <line x1="130" y1="196" x2="170" y2="196"/>
+          <line x1="134" y1="183" x2="166" y2="183"/>
+          <line x1="138" y1="170" x2="162" y2="170"/>
+        </g>
+        <!-- arch doorway -->
+        <path d="M 90 250 L 90 120 Q 90 55 150 55 Q 210 55 210 120 L 210 250"
+              fill="none" stroke="url(#goldline)" stroke-width="4"/>
+        <path d="M 78 254 L 78 116 Q 78 40 150 40 Q 222 40 222 116 L 222 254"
+              fill="none" stroke="url(#goldline)" stroke-width="1.4" opacity="0.65"/>
+        <!-- small castle silhouette -->
+        <g fill="#f3e6c4" opacity="0.9">
+          <rect x="140" y="128" width="20" height="26"/>
+          <polygon points="150,108 158,128 142,128"/>
+          <rect x="126" y="140" width="10" height="14"/>
+          <polygon points="131,130 136,140 126,140"/>
+          <rect x="164" y="140" width="10" height="14"/>
+          <polygon points="169,130 174,140 164,140"/>
+        </g>
+      </svg>
+      <svg class="moon" viewBox="0 0 60 60">
+        <defs>
+          <mask id="moonmask">
+            <rect width="60" height="60" fill="white"/>
+            <circle cx="38" cy="24" r="20" fill="black"/>
+          </mask>
+        </defs>
+        <circle cx="30" cy="30" r="24" fill="#fbeecb" mask="url(#moonmask)"/>
+      </svg>
+    </div>
+
+    <h1>数字からの<br>メッセージ</h1>
+    <div class="subtitle-en">Messages from Numbers</div>
+
+    <p class="lead">
+      ふと目にしたその数字。<br>
+      なぜか何度も見かける数字。<br>
+      それはもしかすると、今のあなたに<br>
+      何かを知らせようとしているのかもしれません。<br><br>
+      時計、車のナンバー、レシート、ゾロ目……。<br>
+      気になった数字があったら、ここに入れてみてください。
+    </p>
+
+    <div class="panel">
+      <span class="feather">🪶</span>
+      <label>あなたが今日見つけた数字は？</label>
+      <div class="hint">（例：111、7715、59 など）</div>
+      <input id="numberInput" type="text" inputmode="numeric" placeholder="数字を入力してください" maxlength="12">
+      <div class="error-msg" id="errorMsg"></div>
+    </div>
+
+    <button class="cta" id="submitBtn">メッセージを受け取る <span class="arrow">→</span></button>
+
+    <div class="benefits">
+      <div class="benefit">
+        <div class="icon">∞</div>
+        <div class="btitle">どんな数字でもOK</div>
+        <div class="bdesc">ゾロ目も、日付も、気になった数字で大丈夫です</div>
+      </div>
+      <div class="benefit">
+        <div class="icon">☾</div>
+        <div class="btitle">すぐに届く</div>
+        <div class="bdesc">その数字が持つ意味から今のあなたへのメッセージを</div>
+      </div>
+      <div class="benefit">
+        <div class="icon">♡</div>
+        <div class="btitle">心のヒントとして</div>
+        <div class="bdesc">未来を断定するものではなく、気になった言葉をヒントに</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== 結果画面 ===== -->
+  <div id="resultScreen">
+
+    <div class="result-number" id="resNumber">000</div>
+    <div id="resBadge"></div>
+    <div class="result-title" id="resTitle"></div>
+
+    <div class="card" id="registeredCore" style="display:none;">
+      <h3>スピリチュアルで語られる意味</h3>
+      <p id="coreText"></p>
+    </div>
+
+    <div class="card" id="unregisteredNotice" style="display:none;">
+      <p style="opacity:.9;">この数字には、この部屋に登録された固有のエンジェルナンバー解釈はまだありません。ここからは、数字を構成する一つひとつの象徴をもとに、Yuwa Entertainmentが読み解いてみます。</p>
+    </div>
+
+    <div class="card" id="symbolCard" style="display:none;">
+      <h3>数字に込められた象徴</h3>
+      <div class="symbol-grid" id="symbolGrid"></div>
+      <div class="reduce-line" id="reduceLine"></div>
+    </div>
+
+    <div class="card">
+      <h3>Yuwa Entertainment からのメッセージ</h3>
+      <p id="messageText"></p>
+    </div>
+
+    <div class="card question-card">
+      <h3 style="justify-content:center;">今日のあなたへの問い</h3>
+      <p id="questionText"></p>
+    </div>
+
+    <p class="notice">
+      「数字からのメッセージ」は、エンジェルナンバーやスピリチュアルの世界で一般的に語られている数字の意味をもとにしています。その意味を大切にしながら、Yuwa Entertainmentの言葉でお届けしています。固有の解釈を登録していない数字については、数秘的な数字の象徴をもとにした独自の読み解きを表示します。未来を断定するものではありません。あなたが今を見つめる、小さなきっかけとしてお楽しみください。
+    </p>
+
+    <button class="again-btn" id="againBtn">もう一度数字を入れる</button>
+  </div>
+
+  <div class="footer">
+    <div class="fname">YUWA ENTERTAINMENT</div>
+    <div class="ftag">A MORE INTERESTING LIFE AT ANY AGE</div>
+  </div>
+
+</div>
+
+<script>
+/* ===================== データ（section 2,3,6,9 相当） ===================== */
+const mainNumbers = {
+  "000": {core:"無限・原点・リセット・可能性／新しい始まり", message:"まだ何も決まっていないからこそ、可能性はひとつではありません。いったん原点へ戻り、「本当はどうしたい？」と自分に聞いてみて。", question:"何の制限もなかったら、あなたは何を選ぶ？"},
+  "111": {core:"新しい始まり・願い・意図・現実化", message:"111は新しい始まりや、願いを形にしていく流れと結びつけて語られる数字です。不安よりも、本当に望んでいる方向へ意識を向けてみて。", question:"今、本当に叶えたいことは何？"},
+  "222": {core:"信頼・忍耐・調和・パートナーシップ", message:"すぐに結果が見えなくても、蒔いた種は育っているのかもしれません。人とのつながりや、今まで積み重ねてきたものを信頼して。", question:"今、もう少し信じてみたいものは何？"},
+  "333": {core:"祈りへの応答・スピリチュアルなサポート・創造・成長", message:"333は、必要なサポートや機会が届くことと結びつけて語られます。ひとりで抱え込まず、あなたの中にある言葉や創造性も外へ出してみて。", question:"今、受け取っているサポートに気づいてる？"},
+  "444": {core:"天使が近くにいる・守護・保護・サポート・安心", message:"444は、天使や見えない存在が近くにいて、あなたを見守り支えているというメッセージとして広く語られています。不安なときほど「ひとりじゃない」と思い出して。幸せは、ちゃんとあなたのそばにもあります。", question:"あなたを見守り、支えてくれている存在を思い浮かべるとしたら？"},
+  "555": {core:"大きな変化・転換・成長・変容", message:"555は、大きな変化や転換の時期と結びつけて語られます。変化は少し怖くても、その先には今までとは違う景色が待っているのかもしれません。", question:"変化の先で、どんな景色を見たい？"},
+  "666": {core:"不吉ではない・バランス・安定・セルフケア・手放し", message:"666はエンジェルナンバーでは悪い数字と決めつけません。頑張りすぎや心配しすぎから少し離れ、生活・心・人との関係のバランスを取り戻すサインとして読まれます。", question:"今、自分に戻してあげたい時間や優しさは何？"},
+  "777": {core:"スピリチュアルな成長・探求・内なる知恵・つながり", message:"777は精神的・スピリチュアルな探求と深く結びつく数字です。外の答えだけでなく、自分の内側にある感覚にも耳を澄ませてみて。", question:"今、自分の内側の声は何と言っている？"},
+  "888": {core:"豊かさ・繁栄・力・循環／金銭的豊かさの可能性", message:"888は豊かさと強く結びつけて語られる数字です。お金だけでなく、愛、ご縁、経験、機会も豊かさ。どんな形で届くかを決めつけず、受け取ることにも心を開いて。", question:"あなたにとって本当の豊かさとは何？"},
+  "999": {core:"完了・終わり・手放し・次の段階", message:"999は、ひとつのサイクルが完了に近づいていることを表す数字として語られます。役目を終えたものを手放すことで、次の物語が始まる場所ができます。", question:"もう役目を終えたと思うものは何？"}
+};
+
+const repeatNumbers = {
+  "1": {core:"新しい始まり・願い・意図・直感が強調", message:"新しい扉が開こうとしています。願いだけで終わらせず、意図と行動を重ねて。"},
+  "2": {core:"信頼・調和・忍耐・関係性が強調", message:"見えないところでも育っているものがあります。焦らず、信頼を。"},
+  "3": {core:"サポート・創造・成長が強調", message:"あなたを支える力と、あなた自身の創造性の両方に心を開いて。"},
+  "4": {core:"天使の守護・保護・サポートが強調", message:"あなたは、強く守られています。ひとりではありません。"},
+  "5": {core:"大きな変化・転換が強調", message:"大きく景色が変わる時期かもしれません。変化の先へ。"},
+  "6": {core:"バランス・セルフケア・安定が強調", message:"自分の心と暮らしのバランスを、もう一度やさしく整えて。"},
+  "7": {core:"スピリチュアルな探求・内なる知恵が強調", message:"自分の内側から届く感覚を、いつもより丁寧に聞いてみて。"},
+  "8": {core:"豊かさ・繁栄・循環が強調", message:"豊かさの流れに心を開いて。受け取ることも、循環のひとつです。"},
+  "9": {core:"完了・手放し・次の章が強調", message:"大きな一区切り。空いた場所から、新しい物語が始まります。"}
+};
+
+const symbolMap = {
+  "0":"可能性・原点・無限",
+  "1":"始まり・自立・意図",
+  "2":"調和・信頼・関係性",
+  "3":"創造・表現・成長",
+  "4":"安定・基盤・支え",
+  "5":"変化・自由・転換",
+  "6":"愛・養育・バランス",
+  "7":"内省・精神性・探求",
+  "8":"豊かさ・力・循環",
+  "9":"完了・手放し・奉仕"
+};
+
+/* ===================== 星の背景生成 ===================== */
+(function makeStars(){
+  const container = document.getElementById('stars');
+  const count = 70;
+  let html = '';
+  for(let i=0;i<count;i++){
+    const size = (Math.random()*2 + 1).toFixed(1);
+    const top = (Math.random()*100).toFixed(2);
+    const left = (Math.random()*100).toFixed(2);
+    const delay = (Math.random()*3.5).toFixed(2);
+    html += `<div class="star" style="width:${size}px;height:${size}px;top:${top}%;left:${left}%;animation-delay:${delay}s;"></div>`;
+  }
+  container.innerHTML = html;
+})();
+
+/* ===================== ロジック ===================== */
+const inputEl = document.getElementById('numberInput');
+const errorEl = document.getElementById('errorMsg');
+
+function digitalRoot(numStr){
+  let sum = numStr.split('').reduce((a,d)=>a+parseInt(d,10),0);
+  while(sum > 9){
+    sum = String(sum).split('').reduce((a,d)=>a+parseInt(d,10),0);
+  }
+  return sum;
+}
+
+function isAllSameDigitRepeated4Plus(str){
+  return /^(\d)\1{3,}$/.test(str);
+}
+
+function showResult(raw){
+  const inputScreen = document.getElementById('inputScreen');
+  const resultScreen = document.getElementById('resultScreen');
+
+  document.getElementById('resNumber').textContent = raw;
+
+  const registeredCore = document.getElementById('registeredCore');
+  const unregisteredNotice = document.getElementById('unregisteredNotice');
+  const symbolCard = document.getElementById('symbolCard');
+  const resBadge = document.getElementById('resBadge');
+
+  registeredCore.style.display = 'none';
+  unregisteredNotice.style.display = 'none';
+  symbolCard.style.display = 'none';
+  resBadge.innerHTML = '';
+
+  let data = null;
+  let mode = 'unregistered';
+
+  if(mainNumbers[raw]){
+    data = mainNumbers[raw];
+    mode = 'main';
+  } else if(isAllSameDigitRepeated4Plus(raw) && repeatNumbers[raw[0]]){
+    const d = raw[0];
+    data = {
+      core: repeatNumbers[d].core,
+      message: repeatNumbers[d].message,
+      question: mainNumbers[d+d+d] ? mainNumbers[d+d+d].question : ''
+    };
+    mode = 'repeat';
+  }
+
+  if(mode === 'main' || mode === 'repeat'){
+    document.getElementById('resTitle').textContent = raw + 'からのメッセージ';
+    resBadge.innerHTML = '<span class="badge">登録済みエンジェルナンバー</span>';
+    registeredCore.style.display = 'block';
+    document.getElementById('coreText').textContent = data.core;
+    document.getElementById('messageText').textContent = data.message;
+    document.getElementById('questionText').textContent = data.question || '今のあなたに、この数字はどんな問いを投げかけていますか？';
+  } else {
+    document.getElementById('resTitle').textContent = raw + 'という数字を見つけたあなたへ';
+    resBadge.innerHTML = '<span class="badge alt">数字の象徴からの読み解き</span>';
+    unregisteredNotice.style.display = 'block';
+    symbolCard.style.display = 'block';
+
+    const digits = raw.split('');
+    const freq = {};
+    digits.forEach(d=>{ freq[d] = (freq[d]||0) + 1; });
+
+    let chips = '';
+    Object.keys(freq).forEach(d=>{
+      const isRepeat = freq[d] >= 2;
+      chips += `<div class="symbol-chip${isRepeat?' repeat':''}"><span class="num">${d}</span>${symbolMap[d]}${isRepeat? '（強く表れているテーマ）':''}</div>`;
+    });
+    document.getElementById('symbolGrid').innerHTML = chips;
+
+    const root = digitalRoot(raw);
+    document.getElementById('reduceLine').textContent =
+      `全ての数字を足して還元すると「${root}」。補助的な着地点として — ${symbolMap[String(root)]}`;
+
+    const messages = digits.map(d=>symbolMap[d]).filter((v,i,a)=>a.indexOf(v)===i);
+    document.getElementById('messageText').textContent =
+      `${raw}を構成する数字には、${messages.slice(0,3).join('、')}といったテーマが見え隠れしています。並び順や意味を断定するのではなく、今のあなたに響く部分だけを、そっと受け取ってみてください。`;
+
+    document.getElementById('questionText').textContent =
+      `${raw}という数字を見つけた今、心に浮かぶことは何ですか？`;
+  }
+
+  inputScreen.style.display = 'none';
+  resultScreen.classList.add('show');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+document.getElementById('submitBtn').addEventListener('click', ()=>{
+  let raw = inputEl.value.trim();
+  raw = raw.replace(/[-‐‑‒–—―ー\s]/g, '');
+  errorEl.textContent = '';
+
+  if(raw.length === 0){
+    errorEl.textContent = '数字を入力してください。';
+    return;
+  }
+  if(!/^\d+$/.test(raw)){
+    errorEl.textContent = '数字だけを入力してください。';
+    return;
+  }
+  if(raw.length > 12){
+    errorEl.textContent = '12桁以内の数字を入力してください。';
+    return;
+  }
+  showResult(raw);
+});
+
+inputEl.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter'){ document.getElementById('submitBtn').click(); }
+});
+
+document.getElementById('againBtn').addEventListener('click', ()=>{
+  document.getElementById('resultScreen').classList.remove('show');
+  document.getElementById('inputScreen').style.display = 'flex';
+  inputEl.value = '';
+  errorEl.textContent = '';
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+</script>
+
+</body>
+</html>
