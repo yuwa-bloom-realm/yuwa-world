@@ -636,9 +636,11 @@ const AREAS = [
            {t:"月夜の謎解き喫茶",u:""},
            {t:"あなたは今夜誰を演じますか？",u:""}] },
 
-  { no:"03", name:"守り星の森",     x:20, y:27, open:false,
+  { no:"03", name:"守り星の森",     x:20, y:27, open:true,
     lead:"守護神たちと出会う森。選択によって出会う存在が変わります。",
-    items:["ナイト / 白狐 / 白龍","花 / 猫 / 案内人","星の言の葉を受け取る"] },
+    items:["ナイト / 白狐 / 白龍","花 / 猫 / 案内人","星の言の葉を受け取る"],
+    cta:"森へ入る",
+    links:[{t:"守り星の森へ",u:"https://yuwa-bloom-realm.github.io/moriboshi-no-mori/"}] },
 
   { no:"04", name:"言の葉の庭",     x:60, y:31, open:true,
     lead:"あなたの心に咲く言葉を集める庭。集めた言葉は、あなただけの宝物になります。",
@@ -1449,7 +1451,7 @@ document.getElementById("skip").addEventListener("click",e=>{
 <!-- ===== 自動更新の仕組み ===== -->
 <script>
 (function(){
-  var MY_VERSION="2026.09.09.2";
+  var MY_VERSION="2026.09.09.3";
   // version.json を確認して、新しければ自動リロード
   function checkUpdate(){
     fetch('version.json?t='+Date.now(),{cache:'no-store'})
