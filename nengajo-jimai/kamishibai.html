@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>年賀状じまい、受理されませんでした｜紙芝居</title>
+<meta name="description" content="桜庭ゆわの短編物語を、イラストとナレーションつきの紙芝居で。">
+<meta property="og:title" content="年賀状じまい、受理されませんでした｜紙芝居">
+<meta property="og:description" content="桜庭ゆわの短編物語を、イラストとナレーションつきの紙芝居で。">
+<meta property="og:image" content="images/img03.webp">
+<style>
+  :root{
+    --paper:#f6efe2;
+    --paper2:#efe4cf;
+    --ink:#3b2f25;
+    --soft:#7a6a58;
+    --wood:#8a5a36;
+    --wood2:#6e4426;
+    --red:#b8362f;
+    --hl:#fff3c4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:radial-gradient(ellipse at top,#fbf6ec 0%,var(--paper) 55%,var(--paper2) 100%);
+    color:var(--ink);
+    font-family:"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP",serif;
+    -webkit-tap-highlight-color:transparent;
+    overflow:hidden;
+  }
+  .app{height:100vh;height:100dvh;display:flex;flex-direction:column;max-width:720px;margin:0 auto;
+       padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom)}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+  /* ---------- 紙芝居の木枠 ---------- */
+  .butai{
+    position:relative;border-radius:10px;padding:10px;
+    background:linear-gradient(135deg,var(--wood) 0%,var(--wood2) 100%);
+    box-shadow:0 6px 18px rgba(60,35,15,.28), inset 0 0 0 2px rgba(255,255,255,.08);
+  }
+  .butai::before{content:"";position:absolute;inset:4px;border-radius:7px;border:1px solid rgba(255,230,190,.25);pointer-events:none}
+  .stage{position:relative;overflow:hidden;border-radius:4px;background:#fdf9f1;aspect-ratio:3/2;max-height:46vh;margin:0 auto}
+  .stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fdf9f1}
+  .stage img.slide-out{animation:out .45s ease forwards}
+  .stage img.slide-in{animation:in .45s ease forwards}
+  .stage img.slide-out-r{animation:outr .45s ease forwards}
+  .stage img.slide-in-r{animation:inr .45s ease forwards}
+  @keyframes out{to{transform:translateX(-105%)}}
+  @keyframes in{from{transform:translateX(105%)}to{transform:none}}
+  @keyframes outr{to{transform:translateX(105%)}}
+  @keyframes inr{from{transform:translateX(-105%)}to{transform:none}}
+
+  /* ---------- 表紙 ---------- */
+  #cover{flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px;padding:18px 4px}
+  .label{text-align:center;font-size:12px;letter-spacing:.3em;color:var(--soft)}
+  .title{text-align:center;font-size:clamp(22px,6vw,30px);line-height:1.5;letter-spacing:.06em}
+  .author{text-align:center;font-size:15px;color:var(--soft);letter-spacing:.2em}
+  .btns{display:flex;flex-direction:column;gap:12px;align-items:center}
+  .btn{width:min(320px,100%);padding:15px 18px;border-radius:999px;font-size:16px;letter-spacing:.08em;
+       transition:transform .1s}
+  .btn:active{transform:scale(.97)}
+  .btn-main{background:var(--red);color:#fff;box-shadow:0 4px 12px rgba(184,54,47,.3)}
+  .btn-sub{background:#fffaf0;border:1px solid #d8c7ab}
+  .note{text-align:center;font-size:12px;color:var(--soft);line-height:1.7}
+
+  /* ---------- 読む画面 ---------- */
+  #reader{flex:1;display:none;flex-direction:column;min-height:0;gap:10px;padding-top:8px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--soft);min-height:38px}
+  .topbar .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px}
+  .pill{padding:7px 12px;border-radius:999px;background:#fffaf0;border:1px solid #d8c7ab;font-size:13px;white-space:nowrap}
+  .pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .textbox{flex:1;min-height:0;overflow-y:auto;background:rgba(255,252,245,.85);border:1px solid #e3d5bd;border-radius:10px;
+           padding:16px 18px;font-size:17px;line-height:2;letter-spacing:.03em;-webkit-overflow-scrolling:touch}
+  .textbox .s{transition:background .3s;border-radius:4px;padding:1px 0}
+  .textbox .s.now{background:var(--hl);box-shadow:0 0 0 2px var(--hl)}
+  .textbox.end{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px}
+  .owari{font-size:22px;letter-spacing:.2em}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:10px}
+  .nav button{flex:1;padding:14px 0;border-radius:12px;font-size:16px;background:#fffaf0;border:1px solid #d8c7ab}
+  .nav button:disabled{opacity:.35}
+  .nav .count{flex:0 0 auto;font-size:14px;color:var(--soft);min-width:64px;text-align:center}
+  .progress{height:3px;background:#e8dcc6;border-radius:3px;overflow:hidden}
+  .progress i{display:block;height:100%;background:var(--red);width:0;transition:width .4s}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- 表紙 -->
+  <section id="cover">
+    <div class="butai"><div class="stage"><img src="images/img03.webp" alt="表紙"></div></div>
+    <div>
+      <p class="label">ゆわ魔法図書館の紙芝居</p>
+      <h1 class="title">年賀状じまい、<br>受理されませんでした</h1>
+      <p class="author">桜庭ゆわ</p>
+    </div>
+    <div class="btns">
+      <button class="btn btn-main" id="startVoice">🔊 声で聞きながら読む</button>
+      <button class="btn btn-sub" id="startSilent">📖 文字だけで読む</button>
+    </div>
+    <p class="note" id="voiceNote">声で聞くときは、マナーモードを解除してね。<br>読み終わると、自動でページがめくれます。</p>
+  </section>
+
+  <!-- 読む画面 -->
+  <section id="reader">
+    <div class="topbar">
+      <span class="t">年賀状じまい、受理されませんでした</span>
+      <button class="pill" id="soundBtn">🔇 声なし</button>
+    </div>
+    <div class="progress"><i id="bar"></i></div>
+    <div class="butai"><div class="stage" id="stage"><img id="pic" alt=""></div></div>
+    <div class="textbox" id="text"></div>
+    <div class="nav">
+      <button id="prev">◀ まえ</button>
+      <span class="count" id="count"></span>
+      <button id="next">つぎ ▶</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const PAGES = [{"img": "img01.webp", "text": "八十三枚目のはがきに「今年で最後にします」と書き終えたとき、典子は小さく息をついた。〈これまで温かいお便りをありがとうございました。勝手ながら、年賀状でのごあいさつは今年をもちまして失礼させていただきます〉同じ文を八十三回。最後のほうは、ペンを持つ指の形を覚えてしまっていた。"}, {"img": "img01.webp", "text": "五十五歳。町の図書館で司書のパートをして、もう十二年になる。両親が残した古い家に一人で住み、毎朝同じ道を自転車で通っている。年賀状は、二十歳のころから一年も欠かさず出してきた。会社の元同僚、子ども会で一緒だったお母さんたち、一度だけ旅先で知り合った老夫婦。年に一度、はがき一枚でつながっている人たちだ。やめると決めたのは、夏の終わりだった。嫌になったわけではない。ただ、手が少し疲れたのだと思う。目も、少し。「終わらせ方を自分で選べるうちに、きちんと終わらせたい」そう決めてしまうと、気持ちは思ったより軽くなった。"}, {"img": "img02.webp", "text": "十二月十五日。年賀状の受付が始まった朝、典子は八十三枚の束をポストに入れた。束が底に落ちる、かさりという音がした。「お疲れさまでした」誰にともなく言って、典子は自転車にまたがった。"}, {"img": "img03.webp", "text": "その日の夕方、郵便受けに一枚のはがきが入っていた。白い、何の飾りもないはがきだった。表には典子の名前と住所。差出人の欄には、こう印刷されている。〈年賀状じまい審査係〉裏返すと、まん中に赤い判子が押してあった。不受理。典子は、玄関先で目を丸くした。"}, {"img": "img04.webp", "text": "〈あなたの年賀状じまいは、受理されませんでした〉その下に、役所の書類のような表が続いている。〈受付枚数：八十三枚〉〈受理：八十三枚〉〈不受理の理由：まだ出していない一枚が残っています〉〈対応：その一枚を出してから、あらためてお申し込みください〉〈受付期限：十二月三十一日 午後十一時五十九分〉〈備考：ほかの八十三名さまへのごあいさつは、たしかにお届けします。じまいそのものに問題はありません〉"}, {"img": "img04.webp", "text": "「……何これ」典子は声に出して言った。誰かのいたずらだろうか。でも、八十三枚という数を知っている人はいない。今朝、ポストに入れたばかりなのだ。まだ出していない一枚。そんなものはない、と思った。年賀状の住所録は、毎年きちんと整理している。出し忘れた人など――。そこまで考えて、典子の手が止まった。一人だけ、いる。住所録には載っていない。載せるのをやめた人。三十年前から。"}, {"img": "img05.webp", "text": "押し入れの奥の、さらに奥。衣装ケースを二つどけた先に、お菓子の缶がある。ふたを開けると、古い手紙と写真のにおいがした。修学旅行の写真。高校の文化祭で、二人でおそろいの法被を着て焼きそばを売ったときのもの。"}, {"img": "img06.webp", "text": "笑っているのは、典子と、ミチ。浜田美知子。みんなは「ミッちゃん」と呼んだが、典子だけは「ミチ」と呼んだ。ミチも典子のことを「のりちゃん」と呼んだ。高校の三年間、それから二十五歳まで、二人はほとんど毎週会っていた。"}, {"img": "img05.webp", "text": "缶の底に、それはあった。一枚の絵はがき。冬の山の写真に、うしのイラストのシールが貼ってある。裏には、ていねいな字で、ミチの名前と、当時のミチの住所。そして、右上に切手。切手は、もう貼ってあった。三十年前の典子が貼ったのだ。貼って、ポストの前まで行って、それから家に持って帰った。"}, {"img": "img07.webp", "text": "けんかの理由は、今思えばささいなことだった。二十五歳の秋、ミチは急に「結婚して、北海道へ行く」と言った。相手の転勤が決まったから、と。典子は、それを最後に聞かされた。式場も、日取りも、引っ越しの日も、全部決まったあとで。「どうして先に言ってくれなかったの」「のりちゃんに言ったら、止められると思ったから」「止めないよ。でも、相談くらいしてほしかった」「のりちゃんだって、いつも自分で決めてから言うじゃない」どちらが悪いということではなかった。ただ、二人とも少しずつ寂しくて、その寂しさの出し方が下手だった。「勝手にすれば」最後にそう言ったのは典子だった。ミチは本当に、勝手に北海道へ行ってしまった。結婚式の招待状は届いたが、典子は欠席に丸をつけた。"}, {"img": "img08.webp", "text": "その冬、典子はこの一枚を書いた。年賀はがきではなく、わざわざ選んだ絵はがきに。ミチが好きだった冬の山の写真。次の年の干支の、うしのシール。文面は、一言だけだった。〈ごめんね〉それしか書けなかった。それ以上書くと、言い訳になる気がした。でも、一言だけでは足りない気もした。足りないかもしれない。もう遅いかもしれない。返事が来なかったら、どうしよう。そう思っているうちに、正月が過ぎ、春が来て、一年が経った。翌年の冬には、もう出す理由が見つからなかった。そうして三十年。"}, {"img": "img09.webp", "text": "典子は、はがきを持って台所のテーブルに座った。古い切手は、今の料金にはとても足りない。それに、この住所にミチはもういないだろう。北海道に行ったきり、どこにいるのかも知らない。元気でいるのかどうかも。「出せるわけないじゃない」典子は審査係のはがきに向かって言った。もちろん、はがきは何も答えない。赤い「不受理」の判子が、蛍光灯の下でつやつや光っているだけだ。"}, {"img": "img10.webp", "text": "図書館では、毎日たくさんの本が返ってくる。中には何年も前に借りられたまま、忘れられていた本もある。そういう本が返ってきたとき、典子はいつも同じことを言う。「おかえりなさい。返してくださって、ありがとうございます」延滞を責めたことは、一度もない。だって、返ってきたのだから。何年遅れても、返ってきた本は、返ってこない本よりずっといい。典子は、はがきの「ごめんね」をもう一度見た。三十年、借りっぱなしの言葉だった。"}, {"img": "img11.webp", "text": "十二月二十日の夜、典子はコートをはおって外に出た。商店街の角の、赤いポスト。三十年前、このはがきを持って立ったのと同じポストだ。雪にはならない冷たい雨が、少しだけ降っていた。はがきを差し入れ口にあてる。手が震えた。五十五歳の手が、二十五歳のときと同じように震えている。それが少しおかしくて、典子は一人で笑った。「料金不足で戻ってきても、知らないからね」そう言って、指を離した。はがきは、すとんと落ちた。"}, {"img": "img11.webp", "text": "そのとき、ポストの中から、ごく小さな音がした。ぽん。判子を押すような音だった。典子はしばらくポストを見つめていた。何も起きない。雨の音がするだけだ。気のせいだろう。そう思って帰りかけたとき、もう一度、今度ははっきり聞こえた。ぽん。「……受理、ってこと？」ポストは何も言わなかった。でも、典子にはそう聞こえた。"}, {"img": "img03.webp", "text": "返事は来ないだろうと思っていた。来なくてもいい、と自分に言い聞かせた。三十年かかって、やっと出せたのだ。それだけで十分だと。十二月二十八日。仕事納めの日、図書館から帰ると、郵便受けに二枚のはがきが入っていた。一枚目は、また審査係からだった。〈あなたの年賀状じまいは、受理されました〉〈ただし、次の一名さまを除きます〉〈除外：浜田美知子さま（旧姓）〉〈理由：先方より、同じ内容の申し出がありました〉同じ内容の申し出。"}, {"img": "img12.webp", "text": "典子は、二枚目のはがきを手に取った。冬の湖の写真の絵はがきだった。右上には、古い切手。典子が貼ったのと同じ時代の、今ではもう売っていない切手だ。宛名には、典子の、この家の住所。三十年前と変わらない住所。その横に、小さな赤い判子が押してある。〈年賀状じまい審査係 確認済〉裏返すと、見覚えのある丸い字があった。〈こっちこそ、ごめん〉"}, {"img": "img12.webp", "text": "その下に、もっと新しいインクで、書き足してあった。〈のりちゃんへ 私も今年、年賀状じまいをしようとしたの。そしたら変なはがきが来て、「受理されませんでした。まだ出していない一枚が残っています」って。押し入れから出てきたよ。三十年前に書いて、出せなかったはがき。切手まで貼ってあった。笑っちゃった。私たち、同じことしてたんだね。のりちゃんのはがきは、昨日届きました。あの年のうしのシール、なつかしかった。ねえ、相談なんだけど。私たちのあいだだけ、じまいはやめにしない？今度は、先に相談したからね。ミチ〉"}, {"img": "img12.webp", "text": "典子は玄関に立ったまま、しばらく動けなかった。それから、声を出して笑った。笑いながら、少し泣いた。「先に相談した、って」三十年前に聞きたかった言葉だった。でも、三十年後に聞いても、ちゃんとうれしかった。"}, {"img": "img13.webp", "text": "その夜、典子は文房具屋で買ってきた新しい年賀はがきを一枚、テーブルに置いた。八十三人へのじまいは、取り消さない。それはそれで、自分で決めた、きちんとした終わり方だ。やめることも、続けることも、どちらも誰かを大切にするやり方なのだと、今はわかる。ただ、この一枚だけは。"}, {"img": "img13.webp", "text": "〈ミチへ 相談してくれて、ありがとう。賛成です。来年も、再来年も、その次も。手が疲れて、目が疲れても、この一枚だけは書きます。のりちゃんより〉書き終えてから、典子は少し考えて、最後に一行足した。〈追伸 今度は、ちゃんと会って話そう〉翌朝、典子はポストにはがきを入れた。ぽん、と小さな音がした。今度は、気のせいだとは思わなかった。"}, {"img": "img14.webp", "text": "一月一日。郵便受けには、例年よりずっと少ない年賀状が入っていた。「じまい、了解しました。お元気で」と書いてくれた人。「実はうちも今年で」と書いてきた人。どれも、うれしかった。その中に一枚、雪の山の写真のはがきがあった。"}, {"img": "img14.webp", "text": "〈あけましておめでとう。春になったら、そっちに行きます。図書館、案内してね。ミチ〉その下に、見慣れた赤い判子が、ちいさく押してあった。〈年賀状じまい審査係 ――このご縁は、受理いたしました〉典子は、はがきを胸にあてた。どこかで、ぽん、と音がした気がした。"}, {"img": "img14.webp", "end": true}];
+
+/* 読み方の補正（声だけに使う） */
+const READINGS = [
+  ["浜田美知子","はまだみちこ"],["美知子","みちこ"],["典子","のりこ"],
+  ["法被","はっぴ"],["干支","えと"],["不受理","ふじゅり"],["受付期限","うけつけきげん"],
+  ["判子","はんこ"],["旧姓","きゅうせい"],["追伸","ついしん"]
+];
+
+const $ = id => document.getElementById(id);
+const synth = window.speechSynthesis;
+const canSpeak = !!(synth && window.SpeechSynthesisUtterance);
+let page = 0, voiceOn = false, token = 0, jaVoice = null, autoTimer = null, busy = false;
+
+/* ---------- 声の準備 ---------- */
+function pickVoice(){
+  if(!canSpeak) return;
+  const vs = synth.getVoices().filter(v => /^ja/i.test(v.lang));
+  jaVoice = vs.find(v => /Kyoko|O-ren|Hattori|Google/i.test(v.name)) || vs[0] || null;
+}
+if(canSpeak){ pickVoice(); synth.onvoiceschanged = pickVoice; }
+else{
+  $("startVoice").style.display = "none";
+  $("voiceNote").innerHTML = "この画面では声が使えないみたい。<br>声で聞きたいときは、Safariやブラウザで開いてね。";
+  $("soundBtn").style.display = "none";
+}
+
+/* ---------- 文を区切る（字幕のハイライト用） ---------- */
+function splitSentences(t){
+  const out=[]; let buf="";
+  const close="」〉』）";
+  for(let i=0;i<t.length;i++){
+    const c=t[i]; buf+=c;
+    if("。！？".includes(c)){
+      while(i+1<t.length && close.includes(t[i+1])){ buf+=t[++i]; }
+      out.push(buf); buf="";
+    }else if((c==="〉"||c==="」") && "〈「".includes(t[i+1]||"")){
+      out.push(buf); buf="";
+    }
+  }
+  if(buf.trim()) out.push(buf);
+  return out;
+}
+function forSpeech(s){
+  let r=s;
+  READINGS.forEach(([a,b])=>{ r=r.split(a).join(b); });
+  return r.replace(/[〈〉「」『』]/g," ").replace(/―+/g,"、").replace(/…+/g,"、").trim();
+}
+
+/* ---------- ページ表示 ---------- */
+function render(dir){
+  const p = PAGES[page];
+  const img = $("pic");
+  const newSrc = "images/"+p.img;
+  if(dir && !img.src.endsWith(p.img)){
+    const old = img.cloneNode(); old.removeAttribute("id");
+    $("stage").appendChild(old);
+    old.className = dir>0 ? "slide-out" : "slide-out-r";
+    img.src = newSrc;
+    img.className = dir>0 ? "slide-in" : "slide-in-r";
+    setTimeout(()=>{ old.remove(); img.className=""; },460);
+  }else{
+    img.src = newSrc;
+  }
+  img.alt = (page===0?"":page+"ページ目の絵");
+
+  const box = $("text");
+  box.scrollTop = 0;
+  if(p.end){
+    box.className="textbox end";
+    box.innerHTML = '<p class="owari">―― おしまい ――</p><p>桜庭ゆわ</p>'+
+      '<a class="btn btn-main" style="margin-top:8px;text-decoration:none;display:block;text-align:center" href="https://line.me/ti/g2/JLE5DC_IjliePPb9tKLrPhVyAReacddikiOvPw?utm_source=invitation&utm_medium=link_copy&utm_campaign=default">📚 ゆわの魔法図書館に戻る</a>'+
+      '<button class="btn btn-sub" id="again">はじめから読む</button>';
+    $("again").onclick = ()=>{ stopVoice(); go(0-page); };
+  }else{
+    box.className="textbox";
+    box.innerHTML = splitSentences(p.text).map((s,i)=>'<span class="s" data-i="'+i+'">'+s+'</span>').join("");
+  }
+  $("count").textContent = (page+1)+" / "+PAGES.length;
+  $("bar").style.width = ((page+1)/PAGES.length*100)+"%";
+  $("prev").disabled = page===0;
+  $("next").disabled = page===PAGES.length-1;
+
+  // 次の絵を先に読み込んでおく
+  if(PAGES[page+1]){ const pre=new Image(); pre.src="images/"+PAGES[page+1].img; }
+
+  if(voiceOn) speakPage();
+}
+function go(d){
+  const n = page+d;
+  if(n<0 || n>=PAGES.length) return;
+  clearTimeout(autoTimer);
+  if(canSpeak) synth.cancel();
+  page = n;
+  render(d>0?1:-1);
+}
+
+/* ---------- ナレーション ---------- */
+function speakPage(){
+  if(!canSpeak) return;
+  const my = ++token;
+  synth.cancel();
+  clearTimeout(autoTimer);
+  const p = PAGES[page];
+  const spans = [...document.querySelectorAll("#text .s")];
+  const lines = p.end ? ["おしまい。"] : spans.map(s=>s.textContent);
+  let i = 0;
+  const next = ()=>{
+    if(my!==token || !voiceOn) return;
+    spans.forEach(s=>s.classList.remove("now"));
+    if(i>=lines.length){
+      if(page<PAGES.length-1) autoTimer=setTimeout(()=>{ if(my===token&&voiceOn) go(1); },1300);
+      return;
+    }
+    const sp = spans[i];
+    if(sp){ sp.classList.add("now"); sp.scrollIntoView({block:"nearest",behavior:"smooth"}); }
+    const u = new SpeechSynthesisUtterance(forSpeech(lines[i]));
+    u.lang="ja-JP"; u.rate=0.95; u.pitch=1;
+    if(jaVoice) u.voice=jaVoice;
+    u.onend = ()=>{ i++; next(); };
+    u.onerror = ()=>{ if(my===token){ i++; next(); } };
+    synth.speak(u);
+  };
+  next();
+}
+function stopVoice(){
+  token++; clearTimeout(autoTimer);
+  if(canSpeak) synth.cancel();
+  document.querySelectorAll("#text .s.now").forEach(s=>s.classList.remove("now"));
+}
+function setVoice(on){
+  voiceOn = on;
+  $("soundBtn").textContent = on ? "🔊 声あり" : "🔇 声なし";
+  $("soundBtn").classList.toggle("on",on);
+  if(on) speakPage(); else stopVoice();
+}
+
+/* ---------- 操作 ---------- */
+function start(withVoice){
+  $("cover").style.display="none";
+  $("reader").style.display="flex";
+  page = 0;
+  voiceOn = withVoice;
+  setVoice(withVoice);
+  render(0);
+}
+$("startVoice").onclick = ()=>{
+  // iPhoneは「タップした瞬間」に一度しゃべらせないと声が出ないので、空の発声で準備
+  if(canSpeak){ const u=new SpeechSynthesisUtterance(" "); u.lang="ja-JP"; synth.speak(u); }
+  start(true);
+};
+$("startSilent").onclick = ()=> start(false);
+$("soundBtn").onclick = ()=> setVoice(!voiceOn);
+$("prev").onclick = ()=> go(-1);
+$("next").onclick = ()=> go(1);
+$("stage").onclick = ()=> go(1);
+document.addEventListener("keydown",e=>{
+  if($("reader").style.display!=="flex") return;
+  if(e.key==="ArrowRight") go(1);
+  if(e.key==="ArrowLeft") go(-1);
+});
+let sx=null, sy=null;
+$("reader").addEventListener("touchstart",e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; },{passive:true});
+$("reader").addEventListener("touchend",e=>{
+  if(sx===null) return;
+  const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+  if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5) go(dx<0?1:-1);
+  sx=null;
+},{passive:true});
+document.addEventListener("visibilitychange",()=>{ if(!voiceOn) return; if(document.hidden) stopVoice(); else speakPage(); });
+</script>
+</body>
+</html>
