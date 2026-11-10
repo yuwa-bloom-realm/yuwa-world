@@ -34,6 +34,11 @@
   #watch{display:none;margin:0 0 36px;}
   #watch video{width:100%;height:auto;border-radius:10px;display:block;background:#1a1512;
     box-shadow:0 4px 18px rgba(90,60,40,.18);}
+  .speed{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:12px;}
+  .speed-label{font-size:13px;color:var(--soft);margin-right:4px;letter-spacing:.08em;}
+  .speed button{font-family:inherit;font-size:14px;padding:7px 12px;border-radius:999px;border:1px solid #d8c3b5;
+    background:#fffdf9;color:var(--ink);cursor:pointer;}
+  .speed button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
   .watch-note{text-align:center;color:var(--soft);font-size:13px;margin-top:9px;}
 </style>
 </head>
@@ -52,6 +57,25 @@
   </div>
   <div id="watch">
     <video id="ehon" controls playsinline preload="metadata" src="nengajo-jimai.mp4"></video>
+    <div class="speed" id="speed">
+      <span class="speed-label">再生速度</span>
+      <button data-r="1" class="on">1倍</button>
+      <button data-r="1.25">1.25倍</button>
+      <button data-r="1.5">1.5倍</button>
+      <button data-r="2">2倍</button>
+    </div>
+    <script>
+    (function(){
+      var v=document.getElementById('ehon'), bs=document.querySelectorAll('#speed button'), rate=1;
+      bs.forEach(function(b){ b.addEventListener('click',function(){
+        rate=parseFloat(b.dataset.r); v.playbackRate=rate;
+        bs.forEach(function(x){ x.classList.toggle('on',x===b); });
+      });});
+      // 再生し直したときも選んだ速度を保つ
+      v.addEventListener('play',function(){ if(v.playbackRate!==rate) v.playbackRate=rate; });
+      v.addEventListener('loadedmetadata',function(){ v.playbackRate=rate; });
+    })();
+    </script>
     <div class="watch-note">絵と朗読でお届けする、紙芝居のような絵本動画です</div>
   </div>
   <div id="read-start"></div>
