@@ -191,7 +191,8 @@ function render(dir){
   if(p.end){
     box.className="textbox end";
     box.innerHTML = '<p class="owari">―― おしまい ――</p><p>桜庭ゆわ</p>'+
-      '<button class="btn btn-sub" id="again" style="margin-top:8px">はじめから読む</button>';
+      '<a class="btn btn-main" style="margin-top:8px;text-decoration:none;display:block;text-align:center" href="https://line.me/ti/g2/JLE5DC_IjliePPb9tKLrPhVyAReacddikiOvPw?utm_source=invitation&utm_medium=link_copy&utm_campaign=default">📚 ゆわの魔法図書館に戻る</a>'+
+      '<button class="btn btn-sub" id="again">はじめから読む</button>';
     $("again").onclick = ()=>{ stopVoice(); go(0-page); };
   }else{
     box.className="textbox";
