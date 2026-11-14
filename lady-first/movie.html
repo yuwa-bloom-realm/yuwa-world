@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>レディーファースト｜絵本動画</title>
+<meta property="og:title" content="レディーファースト｜絵本動画">
+<meta property="og:image" content="images/img01.webp">
+<style>
+  :root{ --bg:#fdf6f3; --ink:#3d3230; --rose:#c2557a; --soft:#8a7670; }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{ background:radial-gradient(ellipse at top,#fffaf8 0%,var(--bg) 60%,#f7e9e6 100%); color:var(--ink); min-height:100vh;
+    font-family:"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP",serif; padding:28px 16px 56px; }
+  main{max-width:720px;margin:0 auto;}
+  .kicker{text-align:center;color:var(--rose);font-size:12px;letter-spacing:.3em;margin-bottom:8px;}
+  h1{text-align:center;font-size:26px;font-weight:600;letter-spacing:.12em;margin-bottom:4px;}
+  .byline{text-align:center;color:var(--soft);font-size:14px;letter-spacing:.2em;margin-bottom:24px;}
+  video{width:100%;height:auto;border-radius:12px;display:block;background:#1a1512;box-shadow:0 6px 20px rgba(90,50,50,.2);}
+  .speed{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:14px;}
+  .speed-label{font-size:13px;color:var(--soft);margin-right:4px;}
+  .speed button{font-family:inherit;font-size:14px;padding:7px 12px;border-radius:999px;border:1px solid #e3c9cf;background:#fffaf8;color:var(--ink);cursor:pointer;}
+  .speed button.on{background:var(--rose);border-color:var(--rose);color:#fff;}
+  .note{text-align:center;color:var(--soft);font-size:13px;margin-top:12px;line-height:1.8}
+  .btns{display:flex;flex-direction:column;gap:12px;align-items:center;margin-top:36px}
+  .btn{display:block;width:min(320px,100%);padding:14px;border-radius:999px;text-align:center;text-decoration:none;letter-spacing:.06em;font-size:15px}
+  .main{background:var(--rose);color:#fff;box-shadow:0 4px 12px rgba(194,85,122,.3)}
+  .sub{background:#fffaf8;border:1px solid #e3c9cf;color:var(--ink)}
+</style>
+</head>
+<body>
+<main>
+  <div class="kicker">絵 本 動 画</div>
+  <h1>レディーファースト</h1>
+  <div class="byline">桜庭ゆわ</div>
+
+  <video id="ehon" controls playsinline preload="metadata" poster="images/img01.webp" src="lady-first.mp4"></video>
+  <div class="speed" id="speed">
+    <span class="speed-label">再生速度</span>
+    <button data-r="1" class="on">1倍</button>
+    <button data-r="1.25">1.25倍</button>
+    <button data-r="1.5">1.5倍</button>
+    <button data-r="2">2倍</button>
+  </div>
+  <p class="note">絵と朗読でお届けする、全文の絵本動画です。<br>音声が流れます。音量に気をつけてね。</p>
+
+  <div class="btns">
+    <a class="btn main" href="https://line.me/ti/g2/JLE5DC_IjliePPb9tKLrPhVyAReacddikiOvPw?utm_source=invitation&utm_medium=link_copy&utm_campaign=default">📚 ゆわの魔法図書館に戻る</a>
+    <a class="btn sub" href="index.html">ほかの形式で楽しむ</a>
+  </div>
+</main>
+<script>
+(function(){
+  var v=document.getElementById('ehon'), bs=document.querySelectorAll('#speed button'), rate=1;
+  bs.forEach(function(b){ b.addEventListener('click',function(){
+    rate=parseFloat(b.dataset.r); v.playbackRate=rate;
+    bs.forEach(function(x){ x.classList.toggle('on',x===b); });
+  });});
+  v.addEventListener('play',function(){ if(v.playbackRate!==rate) v.playbackRate=rate; });
+  v.addEventListener('loadedmetadata',function(){ v.playbackRate=rate; });
+})();
+</script>
+</body>
+</html>
