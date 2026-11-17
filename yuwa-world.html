@@ -49,6 +49,7 @@
     if(note) note.textContent = "お知らせの受け取りを確認しています…";
     const ok = await yuwaAskNotify();
     if(ok){
+      try{ localStorage.setItem("yuwaPassReceived","1"); }catch(e){}
       if(btn){ btn.innerHTML = "✦ 旅人証を受け取りました";
         btn.style.pointerEvents = "none"; btn.style.opacity = ".7"; }
       if(note) note.textContent = "これで、新しい物語が届いたときにお知らせが届きます。";
@@ -57,6 +58,28 @@
     }
   }
   window.yuwaReceivePass = yuwaReceivePass;
+
+  /* 旅人証をもう受け取っているか(この端末で許可済みなら true) */
+  function yuwaHasPass(){
+    try{ if(localStorage.getItem("yuwaPassReceived")==="1") return true; }catch(e){}
+    try{ return ("Notification" in window) && Notification.permission === "granted"; }catch(e){ return false; }
+  }
+  /* 「旅人証を受け取る」ボタン(受け取り済みなら「持っています」表示) */
+  function yuwaPassButtonHTML(){
+    if(yuwaHasPass()){
+      return `<a class="link" id="passNotify" href="javascript:void(0)"
+         style="pointer-events:none;opacity:.75">✦ 旅人証を持っています<span></span></a>`;
+    }
+    return `<a class="link" id="passNotify" href="javascript:void(0)"
+         onclick="yuwaReceivePass()">旅人証を受け取る<span>›</span></a>`;
+  }
+  function yuwaPassNoteText(){
+    return yuwaHasPass()
+      ? "新しい物語が届いたら、お知らせが届きます。"
+      : "旅人証を受け取ると、新しい物語が届いたときにお知らせが届きます。";
+  }
+  window.yuwaPassButtonHTML = yuwaPassButtonHTML;
+  window.yuwaPassNoteText = yuwaPassNoteText;
 </script>
 <style>
 :root{
@@ -395,6 +418,13 @@ html,body{height:100%;overflow:hidden;background:var(--deep);color:var(--ink);
 .mailbox{margin:20px 0 4px;padding:16px 15px 6px;
   border:1px solid rgba(232,200,135,.35);border-radius:13px;
   background:linear-gradient(180deg,rgba(232,200,135,.09),rgba(232,200,135,.02))}
+.door-soon{text-align:center;padding-bottom:16px;
+  background:linear-gradient(180deg,rgba(232,200,135,.08),rgba(232,200,135,.02));
+  border-color:rgba(232,200,135,.35)}
+.door-soon-tx{font-size:12px;line-height:2;color:var(--ink);opacity:.85}
+.door-soon-badge{display:inline-block;margin-top:12px;padding:5px 16px;
+  border:1px solid rgba(232,200,135,.5);border-radius:99px;
+  font-size:11px;letter-spacing:.2em;color:var(--gold)}
 .mailbox-hd{font-size:11.5px;letter-spacing:.18em;color:var(--gold);margin-bottom:13px}
 .letter{border:1px solid rgba(232,200,135,.18);border-radius:11px;
   padding:15px 17px;margin-bottom:11px;background:rgba(232,200,135,.04)}
@@ -975,11 +1005,9 @@ function openSheet(a){
       <div class="envbox-go">手紙を読む</div>
     </div>
     <div class="links" style="margin-top:16px">
-      <a class="link" id="passNotify" href="javascript:void(0)"
-         onclick="yuwaReceivePass()">
-        旅人証を受け取る<span>›</span></a>
+      ${yuwaPassButtonHTML()}
     </div>
-    <div class="intro-note" id="passNote">旅人証を受け取ると、新しい物語が届いたときにお知らせが届きます。</div>`;
+    <div class="intro-note" id="passNote">${yuwaPassNoteText()}</div>`;
   }
 
   body.innerHTML = `
@@ -1173,13 +1201,17 @@ document.getElementById("tabPass").addEventListener("click", () => {
       </ul>
     </div>
     <div class="links" style="margin-top:16px">
-      <a class="link" id="passNotify" href="javascript:void(0)"
-         onclick="yuwaReceivePass()">
-        旅人証を受け取る<span>›</span></a>
+      ${yuwaPassButtonHTML()}
       <a class="link" href="${LINE_URL}" target="_blank" rel="noopener">
         LINEでもつながる<span>›</span></a>
     </div>
-    <div class="intro-note" id="passNote">旅人証を受け取ると、新しい物語が届いたときにお知らせが届きます。</div>`;
+    <div class="intro-note" id="passNote">${yuwaPassNoteText()}</div>
+    <div class="mailbox door-soon" style="margin-top:22px">
+      <div class="mailbox-hd">🗝 旅人の特別な扉</div>
+      <div class="door-soon-tx">この世界を、もっと深く歩きたい旅人のための扉。<br>
+        ここでしか読めない物語や、先に届く作品を準備しています。</div>
+      <div class="door-soon-badge">✦ 近日オープン</div>
+    </div>`;
   sheet.classList.add("up"); scrim.classList.add("on");
 });
 
@@ -1451,7 +1483,7 @@ document.getElementById("skip").addEventListener("click",e=>{
 <!-- ===== 自動更新の仕組み ===== -->
 <script>
 (function(){
-  var MY_VERSION="2026.09.09.3";
+  var MY_VERSION="2026.11.17.1";
   // version.json を確認して、新しければ自動リロード
   function checkUpdate(){
     fetch('version.json?t='+Date.now(),{cache:'no-store'})
