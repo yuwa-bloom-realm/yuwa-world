@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ちょっと余計な自動販売機｜紙芝居</title>
+<meta name="description" content="桜庭ゆわの短編物語を、イラストとナレーションつきの紙芝居で。">
+<meta property="og:title" content="ちょっと余計な自動販売機｜紙芝居">
+<meta property="og:description" content="桜庭ゆわの短編物語を、イラストとナレーションつきの紙芝居で。">
+<meta property="og:image" content="images/img01.webp">
+<style>
+  :root{
+    --paper:#f6efe2;
+    --paper2:#efe4cf;
+    --ink:#3b2f25;
+    --soft:#7a6a58;
+    --wood:#8a5a36;
+    --wood2:#6e4426;
+    --red:#c2557a;
+    --hl:#fff3c4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:radial-gradient(ellipse at top,#fbf6ec 0%,var(--paper) 55%,var(--paper2) 100%);
+    color:var(--ink);
+    font-family:"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP",serif;
+    -webkit-tap-highlight-color:transparent;
+    overflow:hidden;
+  }
+  .app{height:100vh;height:100dvh;display:flex;flex-direction:column;max-width:720px;margin:0 auto;
+       padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom)}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+  /* ---------- 紙芝居の木枠 ---------- */
+  .butai{
+    position:relative;border-radius:10px;padding:10px;
+    background:linear-gradient(135deg,var(--wood) 0%,var(--wood2) 100%);
+    box-shadow:0 6px 18px rgba(60,35,15,.28), inset 0 0 0 2px rgba(255,255,255,.08);
+  }
+  .butai::before{content:"";position:absolute;inset:4px;border-radius:7px;border:1px solid rgba(255,230,190,.25);pointer-events:none}
+  .stage{position:relative;overflow:hidden;border-radius:4px;background:#fdf9f1;aspect-ratio:3/2;max-height:46vh;margin:0 auto}
+  .stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fdf9f1}
+  .stage img.slide-out{animation:out .45s ease forwards}
+  .stage img.slide-in{animation:in .45s ease forwards}
+  .stage img.slide-out-r{animation:outr .45s ease forwards}
+  .stage img.slide-in-r{animation:inr .45s ease forwards}
+  @keyframes out{to{transform:translateX(-105%)}}
+  @keyframes in{from{transform:translateX(105%)}to{transform:none}}
+  @keyframes outr{to{transform:translateX(105%)}}
+  @keyframes inr{from{transform:translateX(-105%)}to{transform:none}}
+
+  /* ---------- 表紙 ---------- */
+  #cover{flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px;padding:18px 4px}
+  .label{text-align:center;font-size:12px;letter-spacing:.3em;color:var(--soft)}
+  .title{text-align:center;font-size:clamp(22px,6vw,30px);line-height:1.5;letter-spacing:.06em}
+  .author{text-align:center;font-size:15px;color:var(--soft);letter-spacing:.2em}
+  .btns{display:flex;flex-direction:column;gap:12px;align-items:center}
+  .btn{width:min(320px,100%);padding:15px 18px;border-radius:999px;font-size:16px;letter-spacing:.08em;
+       transition:transform .1s}
+  .btn:active{transform:scale(.97)}
+  .btn-main{background:var(--red);color:#fff;box-shadow:0 4px 12px rgba(194,85,122,.3)}
+  .btn-sub{background:#fffaf0;border:1px solid #d8c7ab}
+  .note{text-align:center;font-size:12px;color:var(--soft);line-height:1.7}
+
+  /* ---------- 読む画面 ---------- */
+  #reader{flex:1;display:none;flex-direction:column;min-height:0;gap:10px;padding-top:8px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--soft);min-height:38px}
+  .topbar .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px}
+  .pill{padding:7px 12px;border-radius:999px;background:#fffaf0;border:1px solid #d8c7ab;font-size:13px;white-space:nowrap}
+  .pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .textbox{flex:1;min-height:0;overflow-y:auto;background:rgba(255,252,245,.85);border:1px solid #e3d5bd;border-radius:10px;
+           padding:16px 18px;font-size:17px;line-height:2;letter-spacing:.03em;-webkit-overflow-scrolling:touch}
+  .textbox .s{display:block;transition:background .3s;border-radius:4px;padding:1px 0}
+  .textbox .s.ch{text-align:center;color:var(--red);letter-spacing:.15em;font-size:15px;margin:4px 0 10px}
+  .textbox .s.now{background:var(--hl);box-shadow:0 0 0 2px var(--hl)}
+  .textbox.end{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px}
+  .owari{font-size:22px;letter-spacing:.2em}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:10px}
+  .nav button{flex:1;padding:14px 0;border-radius:12px;font-size:16px;background:#fffaf0;border:1px solid #d8c7ab}
+  .nav button:disabled{opacity:.35}
+  .nav .count{flex:0 0 auto;font-size:14px;color:var(--soft);min-width:64px;text-align:center}
+  .progress{height:3px;background:#e8dcc6;border-radius:3px;overflow:hidden}
+  .progress i{display:block;height:100%;background:var(--red);width:0;transition:width .4s}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- 表紙 -->
+  <section id="cover">
+    <div class="butai"><div class="stage"><img src="images/img01.webp" alt="表紙"></div></div>
+    <div>
+      <p class="label">ゆわ魔法図書館の紙芝居</p>
+      <h1 class="title">ちょっと余計な自動販売機</h1>
+      <p class="author">桜庭ゆわ</p>
+    </div>
+    <div class="btns">
+      <button class="btn btn-main" id="startVoice">🔊 朗読を聞きながら読む</button>
+      <button class="btn btn-sub" id="startSilent">📖 文字だけで読む</button>
+    </div>
+    <p class="note" id="voiceNote">朗読の声が流れます。音量に気をつけてね。<br>読み終わると、自動でページがめくれます。</p>
+  </section>
+
+  <!-- 読む画面 -->
+  <section id="reader">
+    <div class="topbar">
+      <span class="t">ちょっと余計な自動販売機</span>
+      <button class="pill" id="soundBtn">🔇 声なし</button>
+    </div>
+    <div class="progress"><i id="bar"></i></div>
+    <div class="butai"><div class="stage" id="stage"><img id="pic" alt=""></div></div>
+    <div class="textbox" id="text"></div>
+    <div class="nav">
+      <button id="prev">◀ まえ</button>
+      <span class="count" id="count"></span>
+      <button id="next">つぎ ▶</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const PAGES = [{"img": "img01.webp", "lines": ["#第一章　コーヒーを返せ", "田中茂、58歳。", "口癖は「まったく、最近の世の中は」。", "今日も会社で若い社員にパソコンの操作を教わり、帰りの電車では隣の男のイヤホンから音が漏れ、すっかり機嫌を悪くしていた。", "「まったく、最近の世の中は……」", "駅からの帰り道。"], "audio": "page01.mp3", "alt": "表紙・タイトル"}, {"img": "img02.webp", "lines": ["茂は、見慣れない自動販売機を見つけた。", "古びた赤い自販機。", "看板には、こう書かれている。", "『あなたにぴったりの一品を。』", "「ほう。気の利いた自販機じゃねえか」", "茂は120円を入れ、ホットコーヒーのボタンを押した。", "ガコンッ！", "出てきたのは、"], "audio": "page02.mp3", "alt": "茂が赤い自販機を見つける"}, {"img": "img03.webp", "lines": ["軍手だった。", "「…………は？」", "軍手。", "右手と左手。", "ご丁寧に新品。", "「おい。コーヒーは？」", "すると、自販機の液晶が光った。", "『お買い上げありがとうございます。』", "「買ってねえよ！！」", "『大変お似合いでございます。』", "「軍手が似合うってどういう意味だ！！」"], "audio": "page03.mp3", "alt": "コーヒーの代わりに軍手が出てくる"}, {"img": "img04.webp", "lines": ["『返品は承っておりません。』", "「コーヒーを返せーーー！！」", "近くを歩いていた女子高生が、びっくりして振り返った。", "茂は咳払いをして、軍手をポケットに突っ込んだ。", "「まったく……」", "その直後だった。", "「あっ！　どうしよう！」", "道端で、若い女性が困っていた。"], "audio": "page04.mp3", "alt": "茂が自販機に「コーヒーを返せ」と叫ぶ"}, {"img": "img05.webp", "lines": ["自転車のチェーンが外れ、手を真っ黒にしながら直そうとしている。", "茂は立ち止まった。", "「おいおい、そんな素手でやったら真っ黒になるぞ」", "「あ、でも……」", "「ちょっと貸してみな」", "ポケットから軍手を取り出す。", "「……なんで軍手持ってるんですか？」", "「俺が聞きてえよ」"], "audio": "page05.mp3", "alt": "自転車の女性を見て軍手を思い出す"}, {"img": "img06.webp", "lines": ["茂は手際よくチェーンを直した。", "「ありがとうございます！　助かりました！」", "女性は満面の笑みを浮かべた。", "茂は照れくさそうに手を振った。", "「いいってことよ」", "そして歩き出してから、ふと立ち止まる。", "「……いや、待てよ」", "振り返る。", "遠くに、赤い自販機。", "その液晶に、小さく文字が光っていた。", "『本日のおすすめ、大成功。』", "「……気のせいだな」", "#第二章　輪ゴム一本、120円", "翌日。", "茂は、また自販機の前に立っていた。", "「昨日のは偶然だ。今日はちゃんとコーヒーを出せよ」", "120円を入れる。", "ホットコーヒーのボタンを押す。", "ガコンッ！"], "audio": "page06.mp3", "alt": "軍手でチェーンを直す"}, {"img": "img07.webp", "lines": ["輪ゴムが一本。", "「少なっ！！！」", "『お買い上げありがとうございます。』", "「一本120円！？　金の輪ゴムか！！」", "『伸縮性に優れた逸品でございます。』", "「そこじゃねえ！！」", "『お客様の柔軟性も見習っていただきたいものです。』", "「うるせえ！！」", "茂は輪ゴムを指に引っかけ、腹立ちまぎれに歩き出した。", "すると、商店街の八百屋の前で、店主が大騒ぎしていた。", "「ありゃあ！　値札の束がバラバラになっちまった！」"], "audio": "page07.mp3", "alt": "輪ゴム一本にあぜんとする茂"}, {"img": "img08.webp", "lines": ["店先では、値札の紙が風に吹かれて舞い上がっていた。", "「おいおい、何やってんだ！」", "茂は慌てて紙を追いかけた。", "一枚拾えば、二枚飛ぶ。", "二枚拾えば、三枚飛ぶ。", "「増えてんじゃねえか！！」", "ようやく全部集め終わったころには、茂の髪はボサボサ。", "「はあ、はあ……。ほらよ！」"], "audio": "page08.mp3", "alt": "八百屋で風に飛んだ値札を追う"}, {"img": "img09.webp", "lines": ["茂は集めた値札を輪ゴムでまとめ、店主に渡した。", "「おお！　助かったよ、茂さん！」"], "audio": "page09.mp3", "alt": "値札を輪ゴムで束ねて渡す"}, {"img": "img10.webp", "lines": ["八百屋の親父は笑って、みかんを一個くれた。", "「持ってきな！」", "「いや、輪ゴム一本でみかんは悪いだろ」", "「いいって！」", "茂はみかんを受け取った。", "そして、ふと考えた。", "「……輪ゴム一本が、みかん一個になった？」", "翌日。", "自販機に向かって、茂は言った。", "「おい。昨日の輪ゴムは高すぎだ」"], "audio": "page10.mp3", "alt": "お礼のみかん一個を見つめる"}, {"img": "img11.webp", "lines": ["『お客様、みかんはおいしかったですか？』", "「……お前、見てたのか？」", "『個人情報保護のため、お答えできません。』", "「絶対見てたろ！！」", "#第三章　余計なお世話の達人", "それからというもの、茂は毎日のように自販機に立ち寄るようになった。", "もちろん、コーヒーは一度も出てこない。", "月曜日。"], "audio": "page11.mp3", "alt": "みかんのことを知っていた自販機を疑う"}, {"img": "img12.webp", "lines": ["出てきたのは、絆創膏。", "「怪我なんかしてねえぞ！」", "『備えあれば憂いなし、でございます。』"], "audio": "page12.mp3", "alt": "絆創膏が出てきて抗議する茂"}, {"img": "img13.webp", "lines": ["その五分後、公園で転んだ少年に絆創膏を貼ってやった。", "火曜日。"], "audio": "page13.mp3", "alt": "公園で男の子のひざに絆創膏を貼る"}, {"img": "img14.webp", "lines": ["出てきたのは、小さな花束。", "「俺を誰だと思ってんだ！　花なんか似合わねえだろ！」", "『昨日、軍手がお似合いだった方とは思えませんね。』", "「まだ言うか！！」"], "audio": "page14.mp3", "alt": "花束を抱えて照れる茂"}, {"img": "img15.webp", "lines": ["帰り道、店を閉める花屋のおばあさんに花束を渡すと、", "「まあ、私に？　何十年ぶりかしら！」", "と、少女のように笑った。", "水曜日。"], "audio": "page15.mp3", "alt": "花屋のおばあさんに花束を渡す"}, {"img": "img16.webp", "lines": ["出てきたのは、しゃぼん玉。", "「58歳のおっさんに何させる気だ！」", "『童心を忘れないことは大切でございます。』", "「余計なお世話だ！」", "その帰り道。", "公園のベンチに、しょんぼりした男の子が座っていた。"], "audio": "page16.mp3", "alt": "しゃぼん玉セットが出てくる"}, {"img": "img17.webp", "lines": ["茂は、なんとなくしゃぼん玉を吹いてみた。", "ふわり。", "ふわふわり。", "男の子が顔を上げた。", "「……もう一回」", "「おう」", "ふわふわふわ。", "男の子が笑った。", "茂も、つられて笑った。", "その瞬間。"], "audio": "page17.mp3", "alt": "公園の男の子がしゃぼん玉に気づく"}, {"img": "img18.webp", "lines": ["ぱちんっ！", "しゃぼん玉の液が茂の鼻に飛び散った。", "「うわっ！　しょっぺえ！」", "男の子はお腹を抱えて笑った。", "「おじちゃん、へたくそー！」", "「うるせえ！　もう一回だ！」", "二人は、日が暮れるまでしゃぼん玉を飛ばした。", "その夜。", "茂は自販機に向かって言った。"], "audio": "page18.mp3", "alt": "茂の鼻先で弾け、男の子が大笑い"}, {"img": "img19.webp", "lines": ["「……まあ、今日のは悪くなかったな」", "『お褒めいただき光栄でございます。』", "「褒めてねえよ」", "『照れ屋でいらっしゃいますね。』", "「お前、ほんっと腹立つな！！」", "#第四章　本日は、あなたの番です", "そんなある日。", "茂は、ひどく疲れていた。", "会社ではミスをして上司に叱られ、帰り道では突然の雨に降られた。", "傘もない。", "靴下までびしょ濡れ。", "「……まったく、今日はろくなことがねえ」", "いつもの自販機の前に立つ。", "「おい。今日は頼むぞ。あったかいコーヒー、出してくれよ」", "120円を入れる。", "ボタンを押す。", "……。", "何も出ない。", "「おい？」", "もう一度押す。", "……。", "「故障か？」", "すると、液晶がゆっくり光った。"], "audio": "page19.mp3", "alt": "夜の自販機に照れながら話す"}, {"img": "img20.webp", "lines": ["『本日は、あなたの番です。』", "「……何が？」", "『いつも、お疲れさまでございます。』", "茂は眉をひそめた。", "「なんだよ、急に気持ち悪いな」", "『本日は、何もお渡しいたしません。』", "「じゃあ金返せ！」", "『代わりに、少々お待ちください。』", "「はあ？」", "そのときだった。", "「あっ！　茂さん！」", "振り返ると、あの自転車の女性がいた。", "「この前はありがとうございました！」"], "audio": "page20.mp3", "alt": "雨の夜、何も出ず「本日は、あなたの番です。」"}, {"img": "img21.webp", "lines": ["女性は傘を差し出した。", "「よかったら、使ってください！」", "「いや、でも……」", "「私、家すぐそこなので！」", "すると、向こうから八百屋の親父がやってきた。", "「おお、茂さん！　ちょうどよかった！」"], "audio": "page21.mp3", "alt": "自転車の女性が傘を差し出す"}, {"img": "img22.webp", "lines": ["手には、みかんの袋。", "「今日は売れ残っちまってな。持ってけ！」", "「いや、そんなに食えねえよ！」", "さらに、花屋のおばあさん。", "「あら、茂さん！　この前のお花、とってもうれしかったわ」"], "audio": "page22.mp3", "alt": "八百屋の店主が袋いっぱいのみかんを渡す"}, {"img": "img23.webp", "lines": ["小さな鉢植えを差し出した。", "「これ、よかったら育ててちょうだい」", "「いやいや、俺、植物なんか……」", "「大丈夫。丈夫な子だから」", "そして。", "「しゃぼん玉のおじちゃーーーん！！」", "あの男の子が走ってきた。", "「これあげる！」"], "audio": "page23.mp3", "alt": "花屋のおばあさんが鉢植えを差し出す"}, {"img": "img24.webp", "lines": ["差し出されたのは、一枚の絵だった。", "そこには、大きな丸い顔のおじさんと、たくさんのしゃぼん玉。", "おじさんの顔には、ものすごく大きな笑顔が描かれていた。", "「……これ、俺か？」", "「うん！　おじちゃん、笑ってたから！」"], "audio": "page24.mp3", "alt": "男の子が茂の笑顔を描いた絵を見せる"}, {"img": "img25.webp", "lines": ["茂は、しばらく絵を見つめた。", "傘。", "みかん。", "鉢植え。", "一枚の絵。", "両手は、もういっぱいだった。", "「……なんだよ、これ」", "思わず、笑いがこぼれた。", "「俺、コーヒー一杯買いに来ただけなんだけどなあ……」", "自販機の液晶が光った。"], "audio": "page25.mp3", "alt": "贈り物で両手がいっぱいになり、茂が笑う"}, {"img": "img26.webp", "lines": ["『本日のおすすめ、いかがでしたか？』", "茂は、鼻をすすった。", "「……悪くねえな」", "『ありがとうございます。』", "「ただし！」", "茂は自販機を指さした。", "「明日こそ、コーヒー出せよ！」", "『善処いたします。』", "「絶対出さねえやつだろ、それ！！」", "#終章　コーヒーは、まだ出ない", "翌朝。", "茂は、いつもの自販機の前に立った。", "「おはようさん」", "『おはようございます。』", "「今日はどうだ？」", "『本日も元気に営業しております。』", "「そうかい」", "120円を入れる。", "コーヒーのボタンを押す。", "ガコンッ！", "出てきたのは、"], "audio": "page26.mp3", "alt": "贈り物を抱えて自販機にほほえむ"}, {"img": "img27.webp", "lines": ["小さな赤いリボン。", "「……おい」", "『お買い上げありがとうございます。』", "「だから！！」", "茂は天を仰いだ。", "「コーヒーはいつ出るんだああああ！！！」", "『近日入荷予定でございます。』", "「何日待たせる気だーーー！！」", "そのとき、後ろから声がした。", "「あのう……」"], "audio": "page27.mp3", "alt": "翌朝、小さな赤いリボンが出てくる"}, {"img": "img28.webp", "lines": ["振り返ると、小さな女の子が立っていた。", "手には、くたびれたぬいぐるみ。", "首元のリボンがほどけて、なくなっている。", "「おじちゃん……リボン、持ってる？」", "茂は、自分の手の中を見た。", "赤いリボン。", "女の子のぬいぐるみ。", "そして、あの腹立たしい自販機。", "「……まったく」"], "audio": "page28.mp3", "alt": "ぬいぐるみを抱えた女の子に声をかけられる"}, {"img": "img29.webp", "lines": ["茂はしゃがみ込み、ぬいぐるみにリボンを結んでやった。", "「ほらよ」", "女の子の顔が、ぱあっと明るくなった。", "「ありがとう！　おじちゃん！」", "茂は頭をかいた。", "「……いいってことよ」", "女の子が走り去る。", "茂は自販機を振り返った。", "「お前さあ……」", "『はい。』", "「……まあ、明日も来てやるよ」", "『心よりお待ちしております。』", "茂は笑って歩き出した。", "その背中に、自販機が小さくつぶやいた。", "『……ちなみに、コーヒーは隣の自販機で販売しております。』", "茂は、ぴたりと足を止めた。", "ゆっくり振り返る。", "隣には、真新しい青い自販機。"], "audio": "page29.mp3", "alt": "くまの首に赤いリボンを結んであげる"}, {"img": "img30.webp", "lines": ["ホットコーヒー、100円。", "「…………」", "三秒の沈黙。", "そして、商店街に怒鳴り声が響いた。", "「先に言ええええええええ！！！！！」", "赤い自販機の液晶には、今日も文字が光っていた。", "『笑顔は無料でございます。』", "おしまい。"], "audio": "page30.mp3", "alt": "隣の青い自販機でホットコーヒー100円。茂が叫ぶ"}, {"img": "img30.webp", "end": true}];
+const OPCHAT = "https://line.me/ti/g2/JLE5DC_IjliePPb9tKLrPhVyAReacddikiOvPw?utm_source=invitation&utm_medium=link_copy&utm_campaign=default";
+
+const $ = id => document.getElementById(id);
+const player = new Audio();
+player.preload = "auto";
+let page = 0, voiceOn = false, autoTimer = null, spans = [], bounds = [];
+
+/* ---------- 文を区切る（字幕のハイライト用） ---------- */
+function splitSentences(t){
+  const out=[]; let buf="";
+  const close="」〉』）";
+  for(let i=0;i<t.length;i++){
+    const c=t[i]; buf+=c;
+    if("。！？".includes(c)){
+      while(i+1<t.length && close.includes(t[i+1])){ buf+=t[++i]; }
+      out.push(buf); buf="";
+    }else if((c==="〉"||c==="」") && "〈「".includes(t[i+1]||"")){
+      out.push(buf); buf="";
+    }
+  }
+  if(buf.trim()) out.push(buf);
+  return out;
+}
+
+/* ---------- ページ表示 ---------- */
+function render(dir){
+  const p = PAGES[page];
+  const img = $("pic");
+  const newSrc = "images/"+p.img;
+  if(dir && !img.src.endsWith(p.img)){
+    const old = img.cloneNode(); old.removeAttribute("id");
+    $("stage").appendChild(old);
+    old.className = dir>0 ? "slide-out" : "slide-out-r";
+    img.src = newSrc;
+    img.className = dir>0 ? "slide-in" : "slide-in-r";
+    setTimeout(()=>{ old.remove(); img.className=""; },460);
+  }else{
+    img.src = newSrc;
+  }
+  img.alt = p.alt || ((page+1)+"ページ目の絵");
+
+  const box = $("text");
+  box.scrollTop = 0;
+  if(p.end){
+    box.className="textbox end";
+    box.innerHTML = '<p class="owari">―― おしまい ――</p><p>桜庭ゆわ</p>'+
+      '<a class="btn btn-main" style="margin-top:8px;text-decoration:none;display:block;text-align:center" href="'+OPCHAT+'">📚 ゆわの魔法図書館に戻る</a>'+
+      '<button class="btn btn-sub" id="again">はじめから読む</button>'+
+      '<a class="btn btn-sub" style="text-decoration:none;display:block;text-align:center" href="index.html">ほかの形式で楽しむ</a>';
+    $("again").onclick = ()=>{ go(0-page); };
+    spans=[]; bounds=[];
+  }else{
+    box.className="textbox";
+    const ls = p.lines;
+    box.innerHTML = ls.map((s,i)=> s[0]==="#"
+      ? '<span class="s ch" data-i="'+i+'">'+s.slice(1)+'</span>'
+      : '<span class="s" data-i="'+i+'">'+s+'</span>').join("");
+    spans = [...box.querySelectorAll(".s")];
+    // 文字数の割合で、声のどのあたりがどの行かを決める
+    const total = ls.reduce((a,s)=>a+s.length,0); let acc=0;
+    bounds = ls.map(s=>{ acc+=s.length; return acc/total; });
+  }
+  $("count").textContent = (page+1)+" / "+PAGES.length;
+  $("bar").style.width = ((page+1)/PAGES.length*100)+"%";
+  $("prev").disabled = page===0;
+  $("next").disabled = page===PAGES.length-1;
+
+  if(PAGES[page+1]){ const pre=new Image(); pre.src="images/"+PAGES[page+1].img; }
+
+  if(voiceOn) playPage(); else stopVoice();
+}
+function go(d){
+  const n = page+d;
+  if(n<0 || n>=PAGES.length) return;
+  clearTimeout(autoTimer);
+  page = n;
+  render(d>0?1:-1);
+}
+
+/* ---------- ナレーション（マルの音声） ---------- */
+let lastIdx = -1;
+function playPage(){
+  clearTimeout(autoTimer);
+  lastIdx = -1;
+  const p = PAGES[page];
+  if(!p.audio){ player.pause(); return; }
+  player.src = "audio/"+p.audio;
+  player.currentTime = 0;
+  const pr = player.play();
+  if(pr && pr.catch) pr.catch(()=>{ setVoice(false); });
+}
+function stopVoice(){
+  clearTimeout(autoTimer);
+  player.pause();
+  spans.forEach(s=>s.classList.remove("now"));
+}
+player.addEventListener("timeupdate",()=>{
+  if(!voiceOn || !player.duration || !spans.length) return;
+  const r = player.currentTime / player.duration;
+  let idx = bounds.findIndex(b=>r < b);
+  if(idx<0) idx = spans.length-1;
+  if(idx!==lastIdx){
+    spans.forEach(s=>s.classList.remove("now"));
+    spans[idx].classList.add("now");
+    spans[idx].scrollIntoView({block:"nearest",behavior:"smooth"});
+    lastIdx = idx;
+  }
+});
+player.addEventListener("ended",()=>{
+  spans.forEach(s=>s.classList.remove("now"));
+  if(voiceOn && page<PAGES.length-1) autoTimer=setTimeout(()=>go(1),1200);
+});
+function setVoice(on){
+  voiceOn = on;
+  $("soundBtn").textContent = on ? "🔊 声あり" : "🔇 声なし";
+  $("soundBtn").classList.toggle("on",on);
+  if(on) playPage(); else stopVoice();
+}
+
+/* ---------- 操作 ---------- */
+function start(withVoice){
+  $("cover").style.display="none";
+  $("reader").style.display="flex";
+  page = 0;
+  voiceOn = withVoice;
+  $("soundBtn").textContent = withVoice ? "🔊 声あり" : "🔇 声なし";
+  $("soundBtn").classList.toggle("on",withVoice);
+  render(0);
+}
+// 朗読の音声がまだ置かれていないときは「文字だけで読む」だけにする（置けば自動で出る）
+fetch("audio/page01.mp3",{method:"HEAD"}).then(r=>{ if(!r.ok) noVoice(); }).catch(noVoice);
+function noVoice(){
+  $("startVoice").style.display="none"; $("soundBtn").style.display="none";
+  $("startSilent").className="btn btn-main"; $("startSilent").textContent="🎴 紙芝居をめくる";
+  $("voiceNote").innerHTML="絵をタップするか、左右にスワイプするとめくれます。";
+}
+$("startVoice").onclick = ()=> start(true);   // タップの中で再生が始まるので、iPhoneでも声が出る
+$("startSilent").onclick = ()=> start(false);
+$("soundBtn").onclick = ()=> setVoice(!voiceOn);
+$("prev").onclick = ()=> go(-1);
+$("next").onclick = ()=> go(1);
+$("stage").onclick = ()=> go(1);
+document.addEventListener("keydown",e=>{
+  if($("reader").style.display!=="flex") return;
+  if(e.key==="ArrowRight") go(1);
+  if(e.key==="ArrowLeft") go(-1);
+});
+let sx=null, sy=null;
+$("reader").addEventListener("touchstart",e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; },{passive:true});
+$("reader").addEventListener("touchend",e=>{
+  if(sx===null) return;
+  const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+  if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5) go(dx<0?1:-1);
+  sx=null;
+},{passive:true});
+</script>
+</body>
+</html>
