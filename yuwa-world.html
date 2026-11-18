@@ -1495,7 +1495,7 @@ document.getElementById("skip").addEventListener("click",e=>{
 <!-- ===== 自動更新の仕組み ===== -->
 <script>
 (function(){
-  var MY_VERSION="2026.11.18.1";
+  var MY_VERSION="2026.11.18.2";
   // version.json を確認して、新しければ自動リロード
   function checkUpdate(){
     fetch('version.json?t='+Date.now(),{cache:'no-store'})
