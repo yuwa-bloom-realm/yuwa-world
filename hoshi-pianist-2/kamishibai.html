@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>星が降る夜のピアニストⅡ｜紙芝居</title>
+<meta name="description" content="桜庭ゆわの短編物語を、絵をめくりながら、文字で読む紙芝居で。">
+<meta property="og:title" content="星が降る夜のピアニストⅡ｜紙芝居">
+<meta property="og:description" content="桜庭ゆわの短編物語を、絵をめくりながら、文字で読む紙芝居で。">
+<meta property="og:image" content="images/img01.webp">
+<style>
+  :root{
+    --paper:#f6efe2;
+    --paper2:#efe4cf;
+    --ink:#3b2f25;
+    --soft:#7a6a58;
+    --wood:#8a5a36;
+    --wood2:#6e4426;
+    --red:#c2557a;
+    --hl:#fff3c4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:radial-gradient(ellipse at top,#fbf6ec 0%,var(--paper) 55%,var(--paper2) 100%);
+    color:var(--ink);
+    font-family:"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP",serif;
+    -webkit-tap-highlight-color:transparent;
+    overflow:hidden;
+  }
+  .app{height:100vh;height:100dvh;display:flex;flex-direction:column;max-width:720px;margin:0 auto;
+       padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom)}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+  /* ---------- 紙芝居の木枠 ---------- */
+  .butai{
+    position:relative;border-radius:10px;padding:10px;
+    background:linear-gradient(135deg,var(--wood) 0%,var(--wood2) 100%);
+    box-shadow:0 6px 18px rgba(60,35,15,.28), inset 0 0 0 2px rgba(255,255,255,.08);
+  }
+  .butai::before{content:"";position:absolute;inset:4px;border-radius:7px;border:1px solid rgba(255,230,190,.25);pointer-events:none}
+  .stage{position:relative;overflow:hidden;border-radius:4px;background:#fdf9f1;aspect-ratio:16/9;max-height:42vh;margin:0 auto}
+  .stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fdf9f1}
+  .stage img.slide-out{animation:out .45s ease forwards}
+  .stage img.slide-in{animation:in .45s ease forwards}
+  .stage img.slide-out-r{animation:outr .45s ease forwards}
+  .stage img.slide-in-r{animation:inr .45s ease forwards}
+  @keyframes out{to{transform:translateX(-105%)}}
+  @keyframes in{from{transform:translateX(105%)}to{transform:none}}
+  @keyframes outr{to{transform:translateX(105%)}}
+  @keyframes inr{from{transform:translateX(-105%)}to{transform:none}}
+
+  /* ---------- 表紙 ---------- */
+  #cover{flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px;padding:18px 4px}
+  .label{text-align:center;font-size:12px;letter-spacing:.3em;color:var(--soft)}
+  .title{text-align:center;font-size:clamp(22px,6vw,30px);line-height:1.5;letter-spacing:.06em}
+  .author{text-align:center;font-size:15px;color:var(--soft);letter-spacing:.2em}
+  .btns{display:flex;flex-direction:column;gap:12px;align-items:center}
+  .btn{width:min(320px,100%);padding:15px 18px;border-radius:999px;font-size:16px;letter-spacing:.08em;
+       transition:transform .1s}
+  .btn:active{transform:scale(.97)}
+  .btn-main{background:var(--red);color:#fff;box-shadow:0 4px 12px rgba(194,85,122,.3)}
+  .btn-sub{background:#fffaf0;border:1px solid #d8c7ab}
+  .note{text-align:center;font-size:12px;color:var(--soft);line-height:1.7}
+
+  /* ---------- 読む画面 ---------- */
+  #reader{flex:1;display:none;flex-direction:column;min-height:0;gap:10px;padding-top:8px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--soft);min-height:38px}
+  .topbar .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px}
+  .pill{padding:7px 12px;border-radius:999px;background:#fffaf0;border:1px solid #d8c7ab;font-size:13px;white-space:nowrap}
+  .pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .textbox{flex:1;min-height:0;overflow-y:auto;background:rgba(255,252,245,.85);border:1px solid #e3d5bd;border-radius:10px;
+           padding:16px 18px;font-size:17px;line-height:2;letter-spacing:.03em;-webkit-overflow-scrolling:touch}
+  .textbox .s{display:block;transition:background .3s;border-radius:4px;padding:1px 0}
+  .textbox .s.ch{text-align:center;color:var(--red);letter-spacing:.15em;font-size:15px;margin:4px 0 10px}
+  .textbox .s.now{background:var(--hl);box-shadow:0 0 0 2px var(--hl)}
+  .textbox.end{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px}
+  .owari{font-size:22px;letter-spacing:.2em}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:10px}
+  .nav button{flex:1;padding:14px 0;border-radius:12px;font-size:16px;background:#fffaf0;border:1px solid #d8c7ab}
+  .nav button:disabled{opacity:.35}
+  .nav .count{flex:0 0 auto;font-size:14px;color:var(--soft);min-width:64px;text-align:center}
+  .progress{height:3px;background:#e8dcc6;border-radius:3px;overflow:hidden}
+  .progress i{display:block;height:100%;background:var(--red);width:0;transition:width .4s}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- 表紙 -->
+  <section id="cover">
+    <div class="butai"><div class="stage"><img src="images/img01.webp" alt="表紙"></div></div>
+    <div>
+      <p class="label">ゆわ魔法図書館の紙芝居</p>
+      <h1 class="title">星が降る夜のピアニストⅡ<br><span style="font-size:.6em">〜時を越えた旋律〜</span></h1>
+      <p class="author">桜庭ゆわ</p>
+    </div>
+    <div class="btns">
+      <button class="btn btn-main" id="start">🎴 紙芝居をめくる</button>
+    </div>
+    <p class="note">絵をタップするか、左右にスワイプするとめくれます。<br>音は出ません。自分のペースで、ゆっくりどうぞ。</p>
+  </section>
+
+  <!-- 読む画面 -->
+  <section id="reader">
+    <div class="topbar">
+      <span class="t">星が降る夜のピアニストⅡ</span>
+      <a class="pill" href="index.html" style="text-decoration:none;color:inherit">ほかの形式</a>
+    </div>
+    <div class="progress"><i id="bar"></i></div>
+    <div class="butai"><div class="stage" id="stage"><img id="pic" alt=""></div></div>
+    <div class="textbox" id="text"></div>
+    <div class="nav">
+      <button id="prev">◀ まえ</button>
+      <span class="count" id="count"></span>
+      <button id="next">つぎ ▶</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// 紙芝居は音声なし（絵と文章だけ）が標準
+const PAGES = [{"img": "img02.webp", "alt": "石畳で目を覚ます少年", "lines": ["#第一幕　止まった時計", "冷たい石畳の上で、少年は目を覚ました。", "「……ここ、どこ？」"]}, {"img": "img03.webp", "alt": "場面2", "lines": ["ゆっくり起き上がる。", "見覚えのない街並みが、どこまでも続いていた。"]}, {"img": "img04.webp", "alt": "場面3", "lines": ["通りには、誰もいない。", "風の音さえ、聞こえなかった。"]}, {"img": "img05.webp", "alt": "十二時で止まった時計塔", "lines": ["少年は時計塔を見上げた。", "針は、十二時を指したまま止まっている。"]}, {"img": "img06.webp", "alt": "場面5", "lines": ["「あの子は……？」", "少年は石畳を走り、何度も彼女の名を呼んだ。", "けれど、返事はなかった。"]}, {"img": "img07.webp", "alt": "場面6", "lines": ["#第二幕　誰もいない街のピアノ", "とうとう少年は、広場のベンチに座り込んだ。", "「もう一度、会いたいのに……」"]}, {"img": "img08.webp", "alt": "場面7", "lines": ["そのとき。", "静まり返った街の奥で、何かが少年の心に触れた。"]}, {"img": "img09.webp", "alt": "場面8", "lines": ["細い路地の先に、小さな建物が見えた。", "少年は、吸い寄せられるように歩き出した。"]}, {"img": "img10.webp", "alt": "場面9", "lines": ["扉の向こうには、一台の古いピアノ。", "少年は、そっと鍵盤に指を置いた。"]}, {"img": "img11.webp", "alt": "場面10", "lines": ["ぽろん、ぽろん。", "「あっ……また間違えた！」", "思うように弾けず、少年は唇をかんだ。"]}, {"img": "img12.webp", "alt": "二人で弾いた思い出", "lines": ["ふいに、あの夜がよみがえる。", "隣にいた少女。二人で弾いた、あの旋律。", "笑い声まで、聞こえる気がした。"]}, {"img": "img13.webp", "alt": "場面12", "lines": ["#第三幕　最後の一音", "「……もう一度。」", "少年は背筋を伸ばし、鍵盤に向き直った。"]}, {"img": "img14.webp", "alt": "場面13", "lines": ["最後の一音が、静かに響いた。", "今度は、間違えなかった。"]}, {"img": "img15.webp", "alt": "動き出す時計の針", "lines": ["かちり。", "止まっていた時計の針が、動き出した。"]}, {"img": "img16.webp", "alt": "場面15", "lines": ["光があふれ、風が街を駆け抜ける。", "止まっていた世界が、息を吹き返していく。"]}, {"img": "img17.webp", "alt": "場面16", "lines": ["まばゆい光の向こうに、見覚えのある建物が現れた。", "あの夜の、音楽堂だった。"]}, {"img": "img18.webp", "alt": "場面17", "lines": ["#第四幕　懐かしい鼻歌", "少年が足を止めると、どこからかピアノの音が聞こえた。", "胸の奥が、どきんと鳴る。"]}, {"img": "img19.webp", "alt": "場面18", "lines": ["少年は、知らず知らず鼻歌を口ずさんでいた。", "あのとき、二人で弾いた曲だ。"]}, {"img": "img20.webp", "alt": "ピアノを弾く女性", "lines": ["音楽堂の中では、一人の女性がピアノを弾いていた。", "長い年月を越えても、その旋律を忘れずに。"]}, {"img": "img21.webp", "alt": "場面20", "lines": ["ふと、女性の指が止まった。", "扉の向こうから、懐かしい鼻歌が聞こえたのだ。"]}, {"img": "img22.webp", "alt": "場面21", "lines": ["女性は立ち上がり、扉へ駆け寄った。", "そして、そっと扉を開いた。"]}, {"img": "img23.webp", "alt": "場面22", "lines": ["#第五幕　もう一度、会えた", "そこに立っていたのは、あの夜のままの少年だった。", "「……え？」"]}, {"img": "img24.webp", "alt": "場面23", "lines": ["女性は両手で口を覆った。", "信じられない。けれど、見間違えるはずがない。"]}, {"img": "img25.webp", "alt": "手を握り合う二人", "lines": ["「……会いたかった！」", "二人は駆け寄り、互いの手をぎゅっと握った。"]}, {"img": "img26.webp", "alt": "場面25", "lines": ["泣きながら、笑った。", "もう会えないと思っていた人が、今、ここにいる。"]}, {"img": "img27.webp", "alt": "場面26", "lines": ["#第六幕　星が返した時間", "そのとき、誰も触れていないピアノが鳴り始めた。", "あの旋律が、音楽堂いっぱいに広がっていく。"]}, {"img": "img28.webp", "alt": "場面27", "lines": ["「えっ……？」", "少年は、自分の手が光っていることに気づいた。"]}, {"img": "img29.webp", "alt": "場面28", "lines": ["女性は慌てて少年の手をつかんだ。", "「ねえ、また光って消えないよね？ ねえ、ちょっと……！」"]}, {"img": "img30.webp", "alt": "場面29", "lines": ["光はますます強くなる。", "「待って……！」", "伸ばした指先が、離れてしまった。"]}, {"img": "img31.webp", "alt": "青年になった少年", "lines": ["光がやむと、そこにいたのは背の高い青年だった。", "「……え？　ぼく……？」", "女性は、また両手で口を覆った。"]}, {"img": "img32.webp", "alt": "場面31", "lines": ["青年は自分の胸に手を当て、少し照れくさそうに笑った。", "「……ぼく、消えてないよ？」"]}, {"img": "img33.webp", "alt": "場面32", "lines": ["二人は並んで座り、空を見上げた。", "星が、次から次へと流れていく。", "今度は、同じ時間の中で。"]}, {"img": "img34.webp", "alt": "場面33", "lines": ["二人はまた、ピアノの前に座った。", "顔を見合わせ、笑いながら、あの曲を歌い、奏でた。"]}, {"img": "img35.webp", "alt": "場面34", "lines": ["ところが――。", "ぽろん。", "「……あっ、また間違えた！」", "女性は思わず吹き出した。", "二人の笑い声が、音楽堂に響いた。"]}, {"img": "img36.webp", "alt": "場面35", "lines": ["長い時間を越えて、二人はようやく隣り合えた。", "今夜も、星が降っている。"]}, {"img": "img37.webp", "alt": "星が降る夜の音楽堂と二人", "lines": ["星が降る夜。", "あの旋律は、これからも続いていく。", "――二人の時間と、ともに。"]}, {"end": true, "img": "img37.webp", "alt": "おしまい"}];
+const OPCHAT = "https://line.me/ti/g2/JLE5DC_IjliePPb9tKLrPhVyAReacddikiOvPw?utm_source=invitation&utm_medium=link_copy&utm_campaign=default";
+
+const $ = id => document.getElementById(id);
+let page = 0;
+const esc = s => s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function render(dir){
+  const p = PAGES[page];
+  const img = $("pic");
+  const newSrc = "images/"+p.img;
+  if(dir && !img.src.endsWith(p.img)){
+    const old = img.cloneNode(); old.removeAttribute("id");
+    $("stage").appendChild(old);
+    old.className = dir>0 ? "slide-out" : "slide-out-r";
+    img.src = newSrc;
+    img.className = dir>0 ? "slide-in" : "slide-in-r";
+    setTimeout(()=>{ old.remove(); img.className=""; },460);
+  }else{
+    img.src = newSrc;
+  }
+  img.alt = p.alt || ((page+1)+"ページ目の絵");
+
+  const box = $("text");
+  box.scrollTop = 0;
+  if(p.end){
+    box.className="textbox end";
+    box.innerHTML = '<p class="owari">―― おしまい ――</p><p>桜庭ゆわ</p>'+
+      '<a class="btn btn-main" style="margin-top:8px;text-decoration:none;display:block;text-align:center" href="'+OPCHAT+'">📚 ゆわの魔法図書館に戻る</a>'+
+      '<button class="btn btn-sub" id="again">はじめから読む</button>'+
+      '<a class="btn btn-sub" style="text-decoration:none;display:block;text-align:center;color:inherit" href="index.html">ほかの形式で楽しむ</a>';
+    $("again").onclick = ()=>{ go(0-page); };
+  }else{
+    box.className="textbox";
+    box.innerHTML = p.lines.map(s=> s[0]==="#"
+      ? '<span class="s ch">'+esc(s.slice(1))+'</span>'
+      : '<span class="s">'+esc(s)+'</span>').join("");
+  }
+  $("count").textContent = (page+1)+" / "+PAGES.length;
+  $("bar").style.width = ((page+1)/PAGES.length*100)+"%";
+  $("prev").disabled = page===0;
+  $("next").disabled = page===PAGES.length-1;
+  if(PAGES[page+1]){ const pre=new Image(); pre.src="images/"+PAGES[page+1].img; }
+}
+function go(d){
+  const n = page+d;
+  if(n<0 || n>=PAGES.length) return;
+  page = n;
+  render(d>0?1:-1);
+}
+$("start").onclick = ()=>{
+  $("cover").style.display="none";
+  $("reader").style.display="flex";
+  page = 0; render(0);
+};
+$("prev").onclick = ()=> go(-1);
+$("next").onclick = ()=> go(1);
+$("stage").onclick = ()=> go(1);
+document.addEventListener("keydown",e=>{
+  if($("reader").style.display!=="flex") return;
+  if(e.key==="ArrowRight") go(1);
+  if(e.key==="ArrowLeft") go(-1);
+});
+let sx=null, sy=null;
+$("reader").addEventListener("touchstart",e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; },{passive:true});
+$("reader").addEventListener("touchend",e=>{
+  if(sx===null) return;
+  const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+  if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5) go(dx<0?1:-1);
+  sx=null;
+},{passive:true});
+</script>
+</body>
+</html>
