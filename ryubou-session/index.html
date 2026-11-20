@@ -43,6 +43,13 @@
   @keyframes sway{0%,100%{transform:skewX(0deg)}50%{transform:skewX(-3deg)}}
   .dragon{position:absolute;right:6px;bottom:70px;width:130px;height:115px;animation:hover 5s ease-in-out infinite;filter:drop-shadow(0 0 12px rgba(95,227,214,.6))}
   @keyframes hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .constellation{position:absolute;inset:0;width:100%;height:100%}
+  .constellation .lines polyline{stroke-dasharray:600;stroke-dashoffset:600;animation:draw 4s ease forwards;opacity:.75}
+  .constellation .lines polyline:nth-child(2){animation-delay:.6s}
+  .constellation .lines polyline:nth-child(3){animation-delay:1.4s}
+  .constellation .lines polyline:nth-child(4){animation-delay:2s}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .cstars circle{animation:twinkle 3.5s ease-in-out infinite}
   .eyebrow{font-size:.85rem;letter-spacing:.2em;color:var(--gold)}
   h1{font-size:1.75rem;line-height:1.5;margin:8px 0 14px;text-shadow:0 0 18px rgba(243,217,164,.35)}
   .lead{font-family:"Shippori Mincho",serif;font-size:1.15rem;color:#fff}
@@ -113,34 +120,20 @@
       <div class="orb g" style="width:22px;height:22px;left:240px;top:120px;animation-delay:3s"></div>
       <div class="orb p" style="width:20px;height:20px;left:0;top:170px;animation-delay:1.5s"></div>
 
-      <!-- 女性のシルエット -->
-      <svg class="woman" viewBox="0 0 200 400" fill="#06081c">
-        <g class="hair">
-          <path d="M88 48 C76 80 70 112 78 142 C66 156 64 178 74 200 C82 182 86 164 90 146 C88 118 90 90 98 62 Z"/>
-        </g>
-        <circle cx="104" cy="60" r="21"/>
-        <rect x="98" y="76" width="12" height="14" rx="4"/>
-        <path d="M84 92 Q104 82 124 92 L128 140 Q120 178 116 200 L94 200 Q88 176 82 140 Z"/>
-        <path d="M124 96 Q140 128 134 170 L128 168 Q130 132 118 104 Z"/>
-        <g class="hem">
-          <path d="M94 196 L116 196 C142 252 162 316 176 386 C140 396 68 396 30 386 C46 316 68 252 94 196 Z"/>
-        </g>
-      </svg>
-
-      <!-- 竜（フィン）のシルエット -->
-      <svg class="dragon" viewBox="0 0 160 140">
+      <!-- 星座の竜（フィン） -->
+      <svg class="constellation" viewBox="0 0 300 300" aria-hidden="true">
         <defs>
-          <linearGradient id="crystal" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#5fe3d6"/>
-            <stop offset=".5" stop-color="#7aa8ff"/>
-            <stop offset="1" stop-color="#ff9ccf"/>
+          <linearGradient id="thread" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#5fe3d6"/><stop offset=".5" stop-color="#f3d9a4"/><stop offset="1" stop-color="#ff9ccf"/>
           </linearGradient>
         </defs>
-        <g fill="url(#crystal)" opacity=".85">
-          <path d="M72 70 C60 46 48 28 24 18 C40 38 42 52 34 62 C50 58 62 62 72 70 Z"/>
-          <path d="M18 112 C40 102 50 82 60 70 C55 54 62 40 76 36 L82 22 L87 35 C97 35 105 42 105 51 L120 53 L105 59 C101 67 93 71 85 73 C97 81 105 93 108 108 C121 100 133 104 142 117 C127 113 117 117 108 123 C90 128 50 126 18 112 Z"/>
+        <g class="lines" fill="none" stroke="url(#thread)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="230,72 250,60 264,74 246,88 230,72"/>
+          <polyline points="246,88 222,112 202,150 216,190 190,226 150,238 110,222 84,242 58,272"/>
+          <polyline points="206,138 166,92 122,72 142,112 106,108 186,162"/>
+          <polyline points="250,60 258,36"/>
         </g>
-        <circle cx="92" cy="47" r="2.2" fill="#fff"/>
+        <g class="cstars"><circle cx="230" cy="72" r="2.6" fill="#fff" style="filter:drop-shadow(0 0 5px #ff9ccf) drop-shadow(0 0 10px #ff9ccf);animation-delay:0.00s"/><circle cx="250" cy="60" r="2.6" fill="#fff" style="filter:drop-shadow(0 0 5px #f3d9a4) drop-shadow(0 0 10px #f3d9a4);animation-delay:0.25s"/><circle cx="264" cy="74" r="2.6" fill="#fff" style="filter:drop-shadow(0 0 5px #f3d9a4) drop-shadow(0 0 10px #f3d9a4);animation-delay:0.50s"/><circle cx="246" cy="88" r="2.6" fill="#fff" style="filter:drop-shadow(0 0 5px #ff9ccf) drop-shadow(0 0 10px #ff9ccf);animation-delay:0.75s"/><circle cx="222" cy="112" r="2.6" fill="#fff" style="filter:drop-shadow(0 0 5px #f3d9a4) drop-shadow(0 0 10px #f3d9a4);animation-delay:1.00s"/><circle cx="202" cy="150" r="3.2" fill="#fff" style="filter:drop-shadow(0 0 5px #f3d9a4) drop-shadow(0 0 10px #f3d9a4);animation-delay:1.25s"/><circle cx="216" cy="190" r="1.8" fill="#fff" style="filter:drop-shadow(0 0 5px #f3d9a4) drop-shadow(0 0 10px #f3d9a4);animation-delay:1.50s"/><circle cx="190" cy="226" r="1.8" fill="#fff" style="filter:drop-shadow(0 0 5px #7aa8ff) drop-shadow(0 0 10px #7aa8ff);animation-delay:1.75s"/><circle cx="150" cy="238" r="2.6" fill="#fff" style="filter:drop-shadow(0 0 5px #f3d9a4) drop-shadow(0 0 10px #f3d9a4);animation-delay:2.00s"/><circle cx="110" cy="222" r="2.2" fill="#fff" style="filter:drop-shadow(0 0 5px #ff9ccf) drop-shadow(0 0 10px #ff9ccf);animation-delay:2.25s"/><circle cx="84" cy="242" r="3.2" fill="#fff" style="filter:drop-shadow(0 0 5px #f3d9a4) drop-shadow(0 0 10px #f3d9a4);animation-delay:2.50s"/><circle cx="58" cy="272" r="3.2" fill="#fff" style="filter:drop-shadow(0 0 5px #7aa8ff) drop-shadow(0 0 10px #7aa8ff);animation-delay:2.75s"/><circle cx="206" cy="138" r="2.2" fill="#fff" style="filter:drop-shadow(0 0 5px #ff9ccf) drop-shadow(0 0 10px #ff9ccf);animation-delay:3.00s"/><circle cx="166" cy="92" r="2.2" fill="#fff" style="filter:drop-shadow(0 0 5px #f3d9a4) drop-shadow(0 0 10px #f3d9a4);animation-delay:3.25s"/><circle cx="122" cy="72" r="3.2" fill="#fff" style="filter:drop-shadow(0 0 5px #ffffff) drop-shadow(0 0 10px #ffffff);animation-delay:3.50s"/><circle cx="142" cy="112" r="1.8" fill="#fff" style="filter:drop-shadow(0 0 5px #ff9ccf) drop-shadow(0 0 10px #ff9ccf);animation-delay:3.75s"/><circle cx="106" cy="108" r="1.8" fill="#fff" style="filter:drop-shadow(0 0 5px #5fe3d6) drop-shadow(0 0 10px #5fe3d6);animation-delay:4.00s"/><circle cx="186" cy="162" r="1.8" fill="#fff" style="filter:drop-shadow(0 0 5px #5fe3d6) drop-shadow(0 0 10px #5fe3d6);animation-delay:4.25s"/><circle cx="258" cy="36" r="3.2" fill="#fff" style="filter:drop-shadow(0 0 5px #f3d9a4) drop-shadow(0 0 10px #f3d9a4);animation-delay:4.50s"/></g>
       </svg>
     </div>
 
