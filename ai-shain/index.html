@@ -278,12 +278,13 @@
           <textarea id="note" name="note" placeholder="ひとことでも大丈夫です"></textarea>
         </div>
 
-        <!-- しんだん結果（どのタイプだったかだけ。チェック内容は送りません） -->
+        <!-- 診断結果とチェックした項目（申込ボタンを押したときだけ送られる） -->
         <input type="hidden" name="result" id="resultField" value="未診断">
+        <input type="hidden" name="checks" id="checksField" value="">
         <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
 
         <div class="field">
-          <label class="agree"><input type="checkbox" id="agree"><span>入力した内容は、無料相談の準備とご連絡にだけ使われることに同意します。</span></label>
+          <label class="agree"><input type="checkbox" id="agree"><span>入力した内容と、診断でチェックした項目は、無料相談の準備とご連絡にだけ使われることに同意します。</span></label>
         </div>
 
         <button type="submit" class="btn" id="btn">30分無料相談を申し込む</button>
@@ -398,6 +399,15 @@
     if (!v("wish"))  return (msg.textContent = "ご希望の日時のイメージを入力してください");
     if (!document.getElementById("agree").checked) return (msg.textContent = "同意のチェックをお願いします");
     if (!GAS_URL.startsWith("https://")) return (msg.textContent = "ただいま準備中です。少し時間をおいてお試しください");
+
+    // 送信する瞬間に、チェックした項目を集める（申込しない人の分はどこにも送られない）
+    const picked = [...box.querySelectorAll("input")]
+      .map((c, i) => c.checked ? `${i + 1}. ${ITEMS[i]}` : null).filter(Boolean);
+    document.getElementById("checksField").value = picked.length ? picked.join("\n") : "チェックなし";
+    if (document.getElementById("resultField").value === "未診断" && picked.length) {
+      const r = RESULTS.find(x => picked.length >= x.min && picked.length <= x.max);
+      document.getElementById("resultField").value = `${r.type}（${picked.length}個）※結果ボタン未押下`;
+    }
 
     btn.disabled = true;
     btn.textContent = "送信しています…";
