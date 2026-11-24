@@ -7,41 +7,72 @@
 <meta property="og:title" content="ちょっと余計な自動販売機｜絵本動画">
 <meta property="og:image" content="images/img01.webp">
 <style>
-  :root{ --bg:#fdf6f3; --ink:#3d3230; --rose:#c2557a; --soft:#8a7670; }
+  :root{ --bg:#fdf8f1; --ink:#3d3230; --accent:#c2557a; --soft:#8a7670; --line:#ead9cc; --gold:#fff3c4; }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{ background:radial-gradient(ellipse at top,#fffaf8 0%,var(--bg) 60%,#f7e9e6 100%); color:var(--ink); min-height:100vh;
+  body{ background:radial-gradient(ellipse at top,#fffbf6 0%,var(--bg) 60%,#f4e7dc 100%); color:var(--ink); min-height:100vh;
     font-family:"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP",serif; padding:28px 16px 56px; }
   main{max-width:720px;margin:0 auto;}
-  .kicker{text-align:center;color:var(--rose);font-size:12px;letter-spacing:.3em;margin-bottom:8px;}
-  h1{text-align:center;font-size:26px;font-weight:600;letter-spacing:.12em;margin-bottom:4px;}
-  .byline{text-align:center;color:var(--soft);font-size:14px;letter-spacing:.2em;margin-bottom:24px;}
-  video{width:100%;height:auto;border-radius:12px;display:block;background:#1a1512;box-shadow:0 6px 20px rgba(90,50,50,.2);}
+  .kicker{text-align:center;color:var(--accent);font-size:12px;letter-spacing:.3em;margin-bottom:8px;}
+  h1{text-align:center;font-size:24px;font-weight:600;letter-spacing:.1em;margin-bottom:4px;}
+  .byline{text-align:center;color:var(--soft);font-size:14px;letter-spacing:.2em;margin-bottom:20px;}
+  button{font-family:inherit;cursor:pointer;color:inherit}
+
+  .resume{display:none;background:#fffdf9;border:1.5px solid var(--accent);border-radius:14px;padding:14px 16px;margin-bottom:14px;text-align:center}
+  .resume p{font-size:14px;line-height:1.8;margin-bottom:10px}
+  .resume .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .resume button{padding:10px 16px;border-radius:999px;font-size:14px;border:1px solid var(--line);background:#fff}
+  .resume button.go{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  video{width:100%;height:auto;border-radius:12px;display:block;background:#1a1512;box-shadow:0 6px 20px rgba(90,60,40,.22);}
   .speed{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:14px;}
   .speed-label{font-size:13px;color:var(--soft);margin-right:4px;}
-  .speed button{font-family:inherit;font-size:14px;padding:7px 12px;border-radius:999px;border:1px solid #e3c9cf;background:#fffaf8;color:var(--ink);cursor:pointer;}
-  .speed button.on{background:var(--rose);border-color:var(--rose);color:#fff;}
-  .note{text-align:center;color:var(--soft);font-size:13px;margin-top:12px;line-height:1.8}
-  .btns{display:flex;flex-direction:column;gap:12px;align-items:center;margin-top:36px}
+  .speed button{font-size:14px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:#fffdf9;}
+  .speed button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+  .chap-h{text-align:center;font-size:14px;color:var(--soft);letter-spacing:.2em;margin:26px 0 10px}
+  .chaps{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .chaps button{width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:12px 14px;border-radius:12px;
+    background:#fffdf9;border:1px solid var(--line);font-size:15px;line-height:1.5;transition:background .3s}
+  .chaps button:active{transform:scale(.99)}
+  .chaps .tm{flex:0 0 46px;font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+  .chaps .nm{flex:1}
+  .chaps .no{color:var(--accent);font-size:12px;letter-spacing:.1em;margin-right:6px}
+  .chaps li.now button{background:var(--gold);border-color:#e9cf8e}
+  .chaps li.peak button{border-color:var(--accent)}
+  .chaps li.peak .nm::after{content:"山場";font-size:11px;color:#fff;background:var(--accent);border-radius:999px;padding:1px 8px;margin-left:8px;vertical-align:middle}
+
+  .note{text-align:center;color:var(--soft);font-size:13px;margin-top:14px;line-height:1.8}
+  .btns{display:flex;flex-direction:column;gap:12px;align-items:center;margin-top:32px}
   .btn{display:block;width:min(320px,100%);padding:14px;border-radius:999px;text-align:center;text-decoration:none;letter-spacing:.06em;font-size:15px}
-  .main{background:var(--rose);color:#fff;box-shadow:0 4px 12px rgba(194,85,122,.3)}
-  .sub{background:#fffaf8;border:1px solid #e3c9cf;color:var(--ink)}
+  .main{background:var(--accent);color:#fff;box-shadow:0 4px 12px rgba(194,85,122,.3)}
+  .sub{background:#fffdf9;border:1px solid var(--line);color:var(--ink)}
 </style>
 </head>
 <body>
 <main>
   <div class="kicker">絵 本 動 画</div>
   <h1>ちょっと余計な自動販売機</h1>
-  <div class="byline">桜庭ゆわ</div>
+  <div class="byline">桜庭ゆわ　｜　約14分</div>
 
-  <video id="ehon" controls playsinline preload="metadata" poster="images/img01.webp" src="jihanki.mp4"></video>
+  <div class="resume" id="resume">
+    <p>前回は <b id="resumeAt"></b> まで観ていました。</p>
+    <div class="row">
+      <button class="go" id="resumeGo">▶ 続きから観る</button>
+      <button id="resumeTop">はじめから</button>
+    </div>
+  </div>
+
+  <video id="ehon" controls playsinline preload="metadata" poster="images/img01.webp" src="jihanki.mp4?v=8"></video>
   <div class="speed" id="speed">
     <span class="speed-label">再生速度</span>
     <button data-r="1" class="on">1倍</button>
     <button data-r="1.25">1.25倍</button>
     <button data-r="1.5">1.5倍</button>
-    <button data-r="2">2倍</button>
   </div>
-  <p class="note">絵と朗読でお届けする、全文の絵本動画です。<br>音声が流れます。音量に気をつけてね。</p>
+  <p class="note">音声が流れます。音量に気をつけてね。<br>途中でやめても、次に開いたとき続きから観られます。</p>
+
+  <div class="chap-h">章からえらぶ</div>
+  <ol class="chaps" id="chaps"></ol>
 
   <div class="btns">
     <a class="btn main" href="https://line.me/ti/g2/JLE5DC_IjliePPb9tKLrPhVyAReacddikiOvPw?utm_source=invitation&utm_medium=link_copy&utm_campaign=default">📚 ゆわの魔法図書館に戻る</a>
@@ -50,7 +81,73 @@
 </main>
 <script>
 (function(){
-  var v=document.getElementById('ehon'), bs=document.querySelectorAll('#speed button'), rate=1;
+  // 章（秒）
+  var CHAPTERS = [
+    {t:0,   name:"コーヒーを返せ"},
+    {t:151, name:"輪ゴム一本、120円"},
+    {t:311, name:"余計なお世話の達人"},
+    {t:433, name:"本日は、あなたの番です"},
+    {t:642, name:"コーヒーは、まだ出ない", last:true}
+  ];
+  var KEY = "yuwa-yokeina-jihanki-pos";
+  var v = document.getElementById("ehon");
+  var $ = function(id){ return document.getElementById(id); };
+
+  // 保存（ブラウザによっては使えないので、失敗しても止まらないように）
+  function load(){ try{ return parseFloat(localStorage.getItem(KEY)) || 0; }catch(e){ return 0; } }
+  function save(t){ try{ localStorage.setItem(KEY, String(Math.floor(t))); }catch(e){} }
+  function clear(){ try{ localStorage.removeItem(KEY); }catch(e){} }
+
+  function fmt(s){ s=Math.floor(s); return Math.floor(s/60)+":"+("0"+(s%60)).slice(-2); }
+
+  // 再生位置へ飛ぶ（iPhoneは読み込み前だと飛べないので、読み込みを待つ）
+  function seekPlay(t){
+    $("resume").style.display="none";
+    function go(){ try{ v.currentTime = t; }catch(e){} var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
+    if(v.readyState >= 1) go();
+    else { v.addEventListener("loadedmetadata", go, {once:true}); v.load(); var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
+    window.scrollTo({top: v.getBoundingClientRect().top + window.scrollY - 16, behavior:"smooth"});
+  }
+
+  // 章リスト
+  var list = $("chaps");
+  CHAPTERS.forEach(function(c,i){
+    var li = document.createElement("li"); if(c.peak) li.className="peak";
+    var b = document.createElement("button");
+    b.innerHTML = '<span class="tm">'+fmt(c.t)+'</span><span class="nm"><span class="no">'+(c.last?"終章":"第"+"一二三四"[i]+"章")+'</span>'+c.name+'</span>';
+    b.onclick = function(){ seekPlay(c.t); };
+    li.appendChild(b); list.appendChild(li);
+  });
+  var items = list.querySelectorAll("li");
+  var curIdx = -1;
+  function markChapter(t){
+    var idx = 0;
+    for(var i=0;i<CHAPTERS.length;i++){ if(t >= CHAPTERS[i].t - 0.5) idx=i; }
+    if(idx!==curIdx){ if(items[curIdx]) items[curIdx].classList.remove("now"); items[idx].classList.add("now"); curIdx=idx; }
+  }
+
+  // 続きから
+  var saved = load();
+  if(saved > 15){
+    $("resumeAt").textContent = fmt(saved);
+    $("resume").style.display = "block";
+    markChapter(saved);
+  }
+  $("resumeGo").onclick = function(){ seekPlay(Math.max(0, saved-3)); };
+  $("resumeTop").onclick = function(){ clear(); seekPlay(0); };
+
+  var last = 0;
+  v.addEventListener("timeupdate", function(){
+    var t = v.currentTime;
+    markChapter(t);
+    if(Math.abs(t-last) >= 5){ last=t; if(v.duration && t > v.duration-20) clear(); else if(t > 15) save(t); }
+  });
+  v.addEventListener("pause", function(){ var t=v.currentTime; if(v.duration && t > v.duration-20) clear(); else if(t > 15) save(t); });
+  v.addEventListener("ended", clear);
+  v.addEventListener("play", function(){ $("resume").style.display="none"; });
+
+  // 再生速度
+  var bs=document.querySelectorAll('#speed button'), rate=1;
   bs.forEach(function(b){ b.addEventListener('click',function(){
     rate=parseFloat(b.dataset.r); v.playbackRate=rate;
     bs.forEach(function(x){ x.classList.toggle('on',x===b); });
