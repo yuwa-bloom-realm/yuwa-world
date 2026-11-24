@@ -54,7 +54,7 @@
     </a>
     <a class="card" href="movie.html" id="movieCard">
       <span class="icon">▶</span>
-      <span><div class="t"><b>観る</b>　絵本動画で<span class="soon">準備中</span></div><div class="d">音楽と映像と朗読で・約14分（音声が出ます）<br>続きから再生／章をえらんで観られます</div></span>
+      <span><div class="t"><b>観る</b>　絵本動画で</div><div class="d">音楽と映像と朗読で・約14分（音声が出ます）<br>続きから再生／章をえらんで観られます</div></span>
     </a>
     <a class="card" href="kamishibai.html">
       <span class="icon">🎴</span>
@@ -66,11 +66,5 @@
 
   <a class="back" href="https://line.me/ti/g2/JLE5DC_IjliePPb9tKLrPhVyAReacddikiOvPw?utm_source=invitation&utm_medium=link_copy&utm_campaign=default">📚 ゆわの魔法図書館に戻る</a>
 </main>
-<script>
-// 動画ファイルがまだ無いときは「準備中」にする（置けば自動で押せるようになる）
-fetch('jihanki.mp4',{method:'HEAD'}).then(function(r){
-  if(!r.ok) document.getElementById('movieCard').classList.add('off');
-}).catch(function(){ document.getElementById('movieCard').classList.add('off'); });
-</script>
 </body>
 </html>
