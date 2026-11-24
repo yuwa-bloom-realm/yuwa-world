@@ -77,13 +77,15 @@ const BOOKS = [
   {t:"私の人生に、私がいなかった",         url:"https://yuwa-bloom-realm.github.io/yuwa-stories/watashi-inakatta.html",    f:"📖"},
   {t:"返品できない宅配便",                 url:"https://yuwa-bloom-realm.github.io/yuwa-world/henpin-dekinai-takuhai/",    f:"📖"},
   {t:"レディーファースト",                 url:"https://yuwa-bloom-realm.github.io/yuwa-world/lady-first/",                f:"📖 ▶ 🎴", cover:"https://yuwa-bloom-realm.github.io/yuwa-world/lady-first/images/img01.webp", lead:"68歳のあきこが、喫茶店のドアの前で思いがけず「レディ」と呼ばれた日のお話。"},
-  {t:"ちょっと余計な自動販売機",           url:"https://yuwa-bloom-realm.github.io/yuwa-world/yokeina-jihanki/",           f:"📖 ▶ 🎴", cover:"https://yuwa-bloom-realm.github.io/yuwa-world/yokeina-jihanki/images/img01.webp", lead:"コーヒーを買いたいだけなのに、なぜか余計なものばかり出てくる赤い自販機のお話。"},
+  {t:"ちょっと余計な自動販売機",           url:"https://yuwa-bloom-realm.github.io/yuwa-world/yokeina-jihanki/",           new:true, f:"📖 ▶ 🎴", cover:"https://yuwa-bloom-realm.github.io/yuwa-world/yokeina-jihanki/images/img01.webp", lead:"コーヒーを買いたいだけなのに、なぜか余計なものばかり出てくる赤い自販機のお話。"},
   {t:"星が降る夜のピアニスト",             url:"https://yuwa-bloom-realm.github.io/yuwa-world/hoshi-pianist/",             f:"📖 ▶ 🎴", cover:"https://yuwa-bloom-realm.github.io/yuwa-world/hoshi-pianist/images/img01.webp", lead:"母を亡くしてピアノを弾かなくなった少女が、丘の上の音楽堂で、ふしぎな少年に出会うお話。"},
   {t:"星が降る夜のピアニストⅡ 〜時を越えた旋律〜", url:"https://yuwa-bloom-realm.github.io/yuwa-world/hoshi-pianist-2/",           f:"📖 🎴", cover:"https://yuwa-bloom-realm.github.io/yuwa-world/hoshi-pianist-2/images/img01.webp", lead:"光に包まれて消えた少年が目を覚ますと、そこは時計の止まった、誰もいない街だった。"}
 ];
 
 const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const n = BOOKS.length, last = BOOKS[n-1];
+// new:true の作品があればそれを「NEW」に出す（なければいちばん下の作品）
+const ni = BOOKS.findIndex(b => b.new), li = ni >= 0 ? ni : BOOKS.length-1;
+const n = li+1, last = BOOKS[li];
 document.getElementById("newest").innerHTML =
   '<a class="new" href="'+last.url+'">' +
   (last.cover ? '<img src="'+last.cover+'" alt="『'+esc(last.t)+'』">' : '') +
