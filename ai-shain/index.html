@@ -59,6 +59,12 @@
   h1{font-size:1.6rem;line-height:1.55;margin:10px 0 16px;font-weight:700}
   .lead{font-size:1rem;color:#fff}
   .lead b{color:var(--neon)}
+  .movie{width:100%;margin-top:26px;border:1px solid var(--neon);border-radius:14px;overflow:hidden;
+    box-shadow:0 0 16px rgba(47,245,224,.35),0 10px 40px rgba(0,0,0,.4);background:#000}
+  .movie video{display:block;width:100%;aspect-ratio:16/9;height:auto}
+  .benefit p+p{margin-top:12px}
+  .benefit .then{margin-top:20px;padding-top:16px;border-top:1px dashed var(--line);color:var(--neon);font-weight:700}
+  .benefit .ask{margin-top:20px;font-weight:700;text-align:center;line-height:1.9}
   .cta-ghost{display:inline-block;margin-top:30px;padding:13px 30px;border:1.5px solid var(--neon);border-radius:999px;color:var(--neon);
     text-decoration:none;font-weight:700;box-shadow:0 0 14px rgba(47,245,224,.35),inset 0 0 10px rgba(47,245,224,.2)}
 
@@ -161,6 +167,9 @@
     <p class="eyebrow en">AI STAFF DIAGNOSIS</p>
     <h1>あなたの専用AI社員、<br>一緒につくりましょう</h1>
     <p class="lead">必要なのはプロンプトではありません。<br>必要なのは、<b>あなたのことを覚えたAI</b>です。</p>
+    <div class="movie">
+      <video src="company_cool_land_v4_light.mp4" autoplay muted loop playsinline controls preload="metadata"></video>
+    </div>
     <a href="#check" class="cta-ghost">診断を始める</a>
   </header>
 
@@ -181,6 +190,16 @@
       <p class="res-count"><span id="resNum">0</span><small> / 12</small></p>
       <p class="res-title" id="resTitle"></p>
       <div class="res-body" id="resBody"></div>
+    </div>
+    <div class="card benefit" style="margin-top:18px">
+      <p>毎回、ゼロから説明しなくていい。昨日の続きから始められます。</p>
+      <p>下書きが、最初から自分の言葉で出てくる。</p>
+      <p>決めるのは自分。面倒な作業はAIに任せて、決めることに集中できます。</p>
+      <p class="then">そうなると——</p>
+      <p>作業に追われてた時間が、「決める」ための時間に変わります。</p>
+      <p>発信が重い作業じゃなくなるから、続けられます。</p>
+      <p>止まってた仕事が、少しずつ前に進み出します。</p>
+      <p class="ask">あなたの仕事も、昨日の続きも、全部覚えてるAIが隣にいる毎日、始めてみませんか？</p>
     </div>
     <div class="card" style="margin-top:18px">
       <p>もっと詳しく聞きたい方は、30分だけ無料でお話しできます。値段や期間などの詳細は、その時にお伝えします。</p>
