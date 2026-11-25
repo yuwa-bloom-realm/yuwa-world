@@ -61,6 +61,7 @@
   .lead b{color:var(--neon)}
   .movie{width:100%;margin-top:26px;border:1px solid var(--neon);border-radius:14px;overflow:hidden;
     box-shadow:0 0 16px rgba(47,245,224,.35),0 10px 40px rgba(0,0,0,.4);background:#000}
+  .movie[hidden]{display:none}
   .movie video{display:block;width:100%;aspect-ratio:16/9;height:auto}
   .benefit p+p{margin-top:12px}
   .benefit .then{margin-top:20px;padding-top:16px;border-top:1px dashed var(--line);color:var(--neon);font-weight:700}
@@ -167,8 +168,11 @@
     <p class="eyebrow en">AI STAFF DIAGNOSIS</p>
     <h1>あなたの専用AI社員、<br>一緒につくりましょう</h1>
     <p class="lead">必要なのはプロンプトではありません。<br>必要なのは、<b>あなたのことを覚えたAI</b>です。</p>
-    <div class="movie">
-      <video src="company_cool_land_v4_light.mp4" autoplay muted loop playsinline controls preload="metadata"></video>
+    <!-- ▼ 動画の場所：『ゆわの1日』（制作中）
+         完成したら、動画ファイルを ai-shain フォルダに入れて、
+         下の <div class="movie" hidden> の「hidden」を消し、src にファイル名を入れる -->
+    <div class="movie" hidden>
+      <video src="" autoplay muted loop playsinline controls preload="metadata"></video>
     </div>
     <a href="#check" class="cta-ghost">診断を始める</a>
   </header>
