@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>『ゆわのAI社員たちが、毎日やっている仕事』実録リスト</title>
+<meta name="description" content="これは、一般的な「AIの使い方」ではありません。私の会社で、名前のあるAI社員たちに、日々、実際に任せている仕事の記録です。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="『ゆわのAI社員たちが、毎日やっている仕事』実録リスト">
+<meta property="og:description" content="これは、一般的な「AIの使い方」ではありません。私の会社で、名前のあるAI社員たちに、日々、実際に任せている仕事の記録です。">
+<meta property="og:url" content="https://yuwa-bloom-realm.github.io/yuwa-world/ai-shain-list/">
+<meta property="og:site_name" content="Yuwa Entertainment">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#03080d; --bg2:#06141c; --bg3:#0a1f2a;
+    --neon:#2ff5e0; --neon2:#00c9d6; --neon-dim:rgba(47,245,224,.35);
+    --text:#e8fbfa; --sub:#8fb8bb;
+    --card:rgba(10,40,48,.45); --line:rgba(47,245,224,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{
+    font-family:"Zen Kaku Gothic New",sans-serif;color:var(--text);line-height:1.9;font-size:16px;
+    background:radial-gradient(ellipse at 50% -10%,#0d3a44 0%,transparent 55%),linear-gradient(180deg,var(--bg1),var(--bg2) 50%,var(--bg3));
+    background-attachment:fixed;min-height:100vh;overflow-x:hidden;
+  }
+  .grid{position:fixed;left:-50%;right:-50%;bottom:-10vh;height:55vh;z-index:0;pointer-events:none;
+    background-image:linear-gradient(var(--neon-dim) 1px,transparent 1px),linear-gradient(90deg,var(--neon-dim) 1px,transparent 1px);
+    background-size:48px 48px;transform:perspective(420px) rotateX(62deg);transform-origin:bottom;
+    -webkit-mask-image:linear-gradient(to top,#000 10%,transparent 85%);mask-image:linear-gradient(to top,#000 10%,transparent 85%);
+    animation:gridmove 6s linear infinite;opacity:.3}
+  @keyframes gridmove{to{background-position:0 48px}}
+  #dots{position:fixed;inset:0;pointer-events:none;z-index:0}
+  .dot{position:absolute;border-radius:50%;background:var(--neon);box-shadow:0 0 6px var(--neon);animation:rise linear infinite;opacity:0}
+  @keyframes rise{0%{opacity:0;transform:translateY(0)}15%{opacity:.8}100%{opacity:0;transform:translateY(-60vh)}}
+  main{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:0 18px 70px}
+  .en{font-family:"Orbitron",sans-serif;letter-spacing:.18em}
+
+  /* ---------- hero ---------- */
+  .hero{text-align:center;padding:64px 0 10px}
+  .eyebrow{font-size:.7rem;color:var(--neon)}
+  h1{font-size:1.42rem;line-height:1.65;margin:12px 0 20px;font-weight:700;text-shadow:0 0 6px rgba(47,245,224,.5),0 0 18px rgba(47,245,224,.25)}
+  h1::after{content:"";display:block;width:56px;height:2px;margin:16px auto 0;background:var(--neon);box-shadow:0 0 10px var(--neon)}
+  .intro{background:var(--card);border:1px solid var(--neon);border-radius:16px;padding:20px 18px;text-align:left;
+    box-shadow:0 0 18px rgba(47,245,224,.25),inset 0 0 22px rgba(47,245,224,.06)}
+  .intro p+p{margin-top:10px}
+
+  /* ---------- list cards ---------- */
+  .card{margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 18px 14px;backdrop-filter:blur(6px);
+    box-shadow:0 0 0 1px rgba(47,245,224,.05),0 10px 40px rgba(0,0,0,.35)}
+  .tag{font-family:"Orbitron";font-size:.62rem;color:var(--neon);letter-spacing:.2em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .tag::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+  .list li{list-style:none;padding:0 0 10px 1.5em;position:relative}
+  .list li+li{border-top:1px dashed rgba(47,245,224,.12);padding-top:10px}
+  .list li::before{content:"";position:absolute;left:2px;top:.72em;width:8px;height:8px;border-radius:2px;background:var(--neon);box-shadow:0 0 8px var(--neon);transform:rotate(45deg)}
+  .list li+li::before{top:calc(10px + .72em)}
+
+  /* ---------- prompt ---------- */
+  hr{border:none;height:1px;margin:44px auto;width:70%;background:linear-gradient(90deg,transparent,var(--neon),transparent);box-shadow:0 0 8px var(--neon)}
+  .lead-in{text-align:center;font-weight:700;color:#fff}
+  .prompt{margin-top:16px;border:1px solid var(--neon);border-radius:14px;background:rgba(0,0,0,.42);padding:18px 16px;
+    box-shadow:0 0 16px rgba(47,245,224,.28);white-space:pre-wrap;word-break:break-word;font-size:.95rem;line-height:1.85}
+  .prompt-head{font-family:"Orbitron";font-size:.6rem;color:var(--neon);letter-spacing:.2em;margin-bottom:8px;white-space:normal}
+  .btn{display:block;width:100%;margin-top:14px;padding:15px;border:none;border-radius:999px;font-size:1rem;font-weight:700;font-family:inherit;
+    color:var(--bg1);background:linear-gradient(135deg,var(--neon),#7ffff0 50%,var(--neon2));cursor:pointer;
+    box-shadow:0 0 18px rgba(47,245,224,.6),0 0 44px rgba(47,245,224,.25);text-align:center;text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .after{margin-top:26px}
+  .after p+p{margin-top:12px}
+  .after .last{color:var(--neon);font-weight:700}
+
+  /* ---------- to diagnosis ---------- */
+  .guide{background:var(--card);border:1px solid var(--neon);border-radius:16px;padding:22px 18px;text-align:center;
+    box-shadow:0 0 22px rgba(47,245,224,.3),inset 0 0 26px rgba(47,245,224,.08)}
+  .guide p+p{margin-top:8px}
+  .url{display:block;margin-top:16px;color:var(--neon);word-break:break-all;font-size:.85rem;text-decoration:underline;text-underline-offset:3px}
+  footer{text-align:center;margin-top:60px;font-size:.75rem;color:var(--sub)}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;z-index:10;padding:10px 20px;border-radius:999px;
+    background:rgba(3,12,16,.92);border:1px solid var(--neon);color:var(--neon);font-size:.9rem;transition:.3s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%)}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="grid"></div>
+<div id="dots"></div>
+
+<main>
+  <header class="hero">
+    <p class="eyebrow en">AI STAFF WORK LOG</p>
+    <h1>『ゆわのAI社員たちが、<br>毎日やっている仕事』<br>実録リスト</h1>
+    <div class="intro">
+      <p>これは、一般的な「AIの使い方」ではありません。</p>
+      <p>私の会社で、名前のあるAI社員たちに、日々、実際に任せている仕事の記録です。</p>
+    </div>
+  </header>
+
+  <div id="lists"></div>
+
+  <hr>
+
+  <section>
+    <p class="lead-in">この文章を、そのままAIに貼ってください。本物です。</p>
+    <div class="prompt" id="prompt"><div class="prompt-head">PROMPT</div><span id="promptText">「今日の作戦を一緒に立ててください。
+まず、私に3つだけ聞いてください。
+1. 今日、絶対にやらなきゃいけないことは何ですか
+2. 気になってること、モヤモヤしてることは何ですか
+3. 今日は何時まで動けますか
+答えたら、今日やることを3つまでに絞って、やる順番と『何時からあれですよ』の声かけ付きで教えてください。長い説明はいりません」</span></div>
+    <button type="button" class="btn" id="copy">この文章をコピーする</button>
+
+    <div class="after">
+      <p>使ってみると、分かることがあります。</p>
+      <p>この子は便利だけど、あなたの昨日の続きも、あなたの仕事のクセも、あなたの決めたルールも、まだ何も知らない。</p>
+      <p>あなたのことをまだ十分に知らないAIには、何度も説明が必要になることがあります。</p>
+      <p>それが「プロンプトをもらったけど、私のものにならなかった」の正体です。</p>
+      <p class="last">あなたのことを覚えたAIは、そこから始まります。</p>
+    </div>
+  </section>
+
+  <hr>
+
+  <section class="guide">
+    <p>ここまで読んで「私も、自分のことを覚えたAIが隣にいたら」と思った方へ。</p>
+    <p>合っているかどうかが分かる、12項目の診断ページがあります。</p>
+    <a class="btn" href="https://yuwa-bloom-realm.github.io/yuwa-world/ai-shain/">12項目の診断ページへ</a>
+    <a class="url" href="https://yuwa-bloom-realm.github.io/yuwa-world/ai-shain/">https://yuwa-bloom-realm.github.io/yuwa-world/ai-shain/</a>
+  </section>
+
+  <footer>© Yuwa Entertainment ／ ゆわ</footer>
+</main>
+<div class="toast" id="toast">コピーしました</div>
+
+<script>
+  // ▼ 実録リスト（マルの文章そのまま。グループごとに1枚のカード）
+  const GROUPS = [
+    ["事業のコンセプトや、新しいサービスの企画",
+     "サービス名・キャッチコピー・肩書きの考案",
+     "価格設定の相談と、競合のリサーチ",
+     "集客の導線と販売方法の設計",
+     "AI社員みんなを集めた合同作戦会議（最後に決めるのは社長）",
+     "サービスのヒアリングシート作り",
+     "講座や教材の企画・制作",
+     "複数のAI社員の意見を比較・検討する",
+     "他のAI社員への引き継ぎ資料の作成"],
+    ["短編・長編の物語を一緒に作る（プロット、世界観、登場人物、伏線）",
+     "原稿の推敲と最終添削、矛盾のチェック",
+     "朗読公演や体験会の台本づくり",
+     "絵本動画やリールを組み立てる（ナレーション・字幕・音楽つけ）",
+     "完成品を最初から最後まで確かめて、間違いを探す",
+     "文通の返事を一緒に読んで、返信の下書きを作る"],
+    ["物語の挿絵と、登場人物のビジュアル制作",
+     "竜のフィンなど、世界のキャラクターデザイン",
+     "SNS用画像、Zoom背景、本の表紙のデザイン"],
+    ["書き換えノートや診断ページなど、アプリとページを作る",
+     "AI社員そのものを作る（チーム編成・役割ごとの社員づくり）",
+     "作ったものを公開場所に上げて、スマホからでも扱える形にする",
+     "申込フォームと自動返信の仕組みを動かす",
+     "魔法図書館の本棚と紙芝居ページを作り、新作を足す",
+     "通知の仕組み（「何時からあれですよ」の声かけの部品）",
+     "Square決済やパスコード配信の仕組みづくり"],
+    ["カウンセリングの質問やワークの考案",
+     "心理学の学習・研究サポート",
+     "星紡術など、独自メソッドの共同開発"],
+    ["Facebook・Instagram・Threadsの投稿文と台本",
+     "告知文・募集文・LPの文章づくり",
+     "看護師時代や子育ての実話を、発信コンテンツにする",
+     "申込・コメント・問い合わせを見張って、来たらすぐ知らせる"],
+    ["市場の価格や相場を、根拠つきで調べる",
+     "知らない仕組みを調べて、かみくだいて説明する",
+     "経費の比較と計算"],
+    ["朝7時に「おはよう」と言いに来て、今日やることと優先のおすすめを渡す",
+     "メールを仕分けて、大事なものだけ朝にまとめて渡す",
+     "返信の下書きを用意する（送るかどうか決めるのは社長）",
+     "過去の約束や締切、人とのやり取りを踏まえて提案する"],
+    ["決定事項を記録して、次の仕事に引き継ぐ",
+     "申込と売上の記録を、誰の分か分かるように分けて残す",
+     "やりかけの仕事を一覧にして、「あと一歩」の形で見せる",
+     "新しい企画が溢れたら、置き場所に預けて今の仕事に戻す",
+     "電子領収書などの事務書類の制作"],
+    ["頭の中の整理と、意思決定のサポート",
+     "売り込みに寄りそうになったら、共感型に引き戻す",
+     "誰かと比べすぎて落ち込んだら、届いた証拠を具体的に返す",
+     "「違う」と言われたら、言い訳せずに聞き直して直す"],
+  ];
+
+  const wrap = document.getElementById("lists");
+  GROUPS.forEach((items, i) => {
+    const c = document.createElement("section");
+    c.className = "card";
+    const tag = document.createElement("p");
+    tag.className = "tag";
+    tag.textContent = "LOG " + String(i + 1).padStart(2, "0");
+    const ul = document.createElement("ul");
+    ul.className = "list";
+    items.forEach(t => { const li = document.createElement("li"); li.textContent = t; ul.appendChild(li); });
+    c.append(tag, ul);
+    wrap.appendChild(c);
+  });
+
+  // ▼ コピーボタン
+  const toast = document.getElementById("toast");
+  document.getElementById("copy").addEventListener("click", async () => {
+    const text = document.getElementById("promptText").textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      const ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
+    }
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 1800);
+  });
+
+  // ▼ 光の粒
+  (function(){
+    const d = document.getElementById("dots");
+    for (let i = 0; i < 22; i++) {
+      const s = document.createElement("div"); const z = Math.random()*2.5+1;
+      s.className = "dot";
+      s.style.cssText = `width:${z}px;height:${z}px;left:${Math.random()*100}%;bottom:${Math.random()*40}%;animation-duration:${8+Math.random()*10}s;animation-delay:${-Math.random()*18}s`;
+      d.appendChild(s);
+    }
+  })();
+</script>
+</body>
+</html>
